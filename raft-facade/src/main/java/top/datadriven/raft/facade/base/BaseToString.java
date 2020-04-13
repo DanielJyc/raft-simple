@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 public class BaseToString implements Serializable {
 
-    private static final long serialVersionUID = -7786075571145310105L;
+    private static final long serialVersionUID = -9222282455453228433L;
 
     @Override
     public String toString() {

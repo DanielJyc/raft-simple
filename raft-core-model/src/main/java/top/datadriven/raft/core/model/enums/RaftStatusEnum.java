@@ -6,21 +6,21 @@ import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @description: 数据集级别:ATOMIC/COMMON/APP
+ * @description: 节点状态(角色)
  * @author: jiayancheng
  * @email: jiayancheng@foxmail.com
- * @datetime: 2018/5/16 下午2:37
+ * @datetime: 2020/4/13 下午9:37
  * @version: 1.0.0
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public enum DatasetLevelEnum {
+public enum RaftStatusEnum {
 
     /**
-     * 数据集等级
+     * 节点状态(角色)
      */
-    ATOMIC("ATOMIC", "原子数据集"),
-    COMMON("COMMON", "公共层数据集"),
-    APP("APP", "应用层数据集"),;
+    LEADER("LEADER", "主节点"),
+    CANDIDATE("CANDIDATE", "候选节点"),
+    FOLLOWER("FOLLOWER", "从节点"),;
 
     /**
      * 枚举code
@@ -40,13 +40,13 @@ public enum DatasetLevelEnum {
      * @param code 枚举code
      * @return 枚举
      */
-    public DatasetLevelEnum getByCode(String code) {
-        for (DatasetLevelEnum anEnum : DatasetLevelEnum.values()) {
+    public RaftStatusEnum getByCode(String code) {
+        for (RaftStatusEnum anEnum : RaftStatusEnum.values()) {
             if (StringUtils.equals(anEnum.getCode(), code)) {
                 return anEnum;
             }
         }
-        return null;
+        throw new RuntimeException("code不存在");
     }
 
 }
