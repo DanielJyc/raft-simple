@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+    <!--加载文件配置变量-->
+    <context:property-placeholder location="classpath:props/dataservice.properties"/>
+
+    <!-- 允许使用@Value -->
+    <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:props/dataservice.properties</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <import resource="classpath*:spring/spring-mybatis.xml"/>
+    <import resource="classpath*:spring/spring-mvc.xml"/>
+    <import resource="classpath*:spring/spring-beans.xml"/>
+    <import resource="classpath*:spring/spring-aop.xml"/>
+
+</beans>

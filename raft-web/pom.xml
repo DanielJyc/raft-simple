@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>top.datadriven.raft</groupId>
+        <artifactId>raft-simple</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>raft-web</artifactId>
+    <packaging>war</packaging>
+    <name>raft-web Maven Webapp</name>
+    <url>http://maven.apache.org</url>
+    <dependencies>
+        <!--内部-->
+        <dependency>
+            <groupId>top.datadriven.raft</groupId>
+            <artifactId>raft-biz-service-impl</artifactId>
+        </dependency>
+
+        <!--外部-->
+        <!--servlet-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <!--<finalName>raft-simple</finalName>-->
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.4.5.v20170502</version>
+                <configuration>
+                    <httpConnector>
+                        <port>8809</port>
+                    </httpConnector>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <webApp>
+                        <contextPath>/</contextPath>
+                    </webApp>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <warSourceDirectory>
+                        ${basedir}/src/main/webapp
+                    </warSourceDirectory>
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                    <warName>raft-simple</warName>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+</project>

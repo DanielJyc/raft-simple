@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>top.datadriven.raft</groupId>
+        <artifactId>raft-simple</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>raft-test</artifactId>
+
+    <dependencies>
+        <!--内部-->
+        <dependency>
+            <groupId>top.datadriven.raft</groupId>
+            <artifactId>raft-integration</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>top.datadriven.raft</groupId>
+            <artifactId>raft-facade</artifactId>
+        </dependency>
+
+        <!--外部-->
+        <!--spring-test-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+    </dependencies>
+</project>

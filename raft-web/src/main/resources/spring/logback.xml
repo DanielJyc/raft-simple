@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property resource="props/dataservice.properties"/>
+    <!-- %.-1level 只显示信息级别的首字母,%-5level 左对齐显示信息级别全称 -->
+    <!-- 如需自定义关键字，用 %mdc{键名} 表示,程序中用MDC.put("键名","键值")设置，可动态设置 [%logger:%line]-->
+    <property name="log_pattern"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS}|%X{LOG_LOCAL_IP}|%X{TRACE_LOG_ID}|%thread|%line|%-5level|%X{LOG_EXECUTION}|%logger{5}|%X{LOG_ELAPSED_TIME} - %msg%n"/>
+    <property name="log_path" value="${ds.log.home}"/>
+    <property name="log_charset" value="UTF-8"/>
+    <property name="log_max_file_size" value="512MB"/>
+
+    <!--控制台输出，用户IDE环境下开发调试-->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log_pattern}</pattern>
+            <charset>${log_charset}</charset>
+        </encoder>
+    </appender>
+
+    <!--ds_error日志，记录错误日志-->
+    <appender name="ds_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log_path}/ds_error.log</File>
+        <append>true</append>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${log_pattern}</pattern>
+            <charset>${log_charset}</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_path}/ds_error.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${log_max_file_size}</maxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="ds_app" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log_path}/ds_app.log</File>
+        <append>true</append>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${log_pattern}</pattern>
+            <charset>${log_charset}</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_path}/ds_app.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxHistory>${ds.log.day.count}</maxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${log_max_file_size}</maxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <!--不丢失日志-->
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1000</queueSize>
+        <appender-ref ref="ds_app"/>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <logger name="ds_app" level="${ds.log.level}" additivity="false">
+        <appender-ref ref="ASYNC"/>
+    </logger>
+    <logger name="ds_error" level="${ds.log.level}" additivity="true">
+        <appender-ref ref="ds_error"/>
+    </logger>
+
+    <root level="${ds.log.level}">
+        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="stdout"/>
+    </root>
+
+    <!--外部依赖日志级别-->
+    <logger name="com.ibatis" level="INFO"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="java.sql.PreparedStatement" level="INFO"/>
+    <logger name="org.springframework.web.servlet.DispatcherServlet" level="INFO"/>
+    <logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="INFO"/>
+    <logger name="java.sql" level="INFO"/>
+    <logger name="org.apache.commons" level="INFO"/>
+    <logger name="java.sql.Statement" level="INFO"/>
+    <logger name="org.springframework.web.context.support.XmlWebApplicationContext" level="INFO"/>
+    <logger name="com.ibatis.common.jdbc.SimpleDataSource" level="INFO"/>
+    <logger name="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" level="INFO"/>
+    <logger name="java.sql.ResultSet" level="INFO"/>
+    <logger name="java.sql.Connection" level="INFO"/>
+    <logger name="com.ibatis.common.jdbc.ScriptRunner" level="INFO"/>
+    <logger name="org.jdbcdslog" level="INFO"/>
+
+</configuration>
