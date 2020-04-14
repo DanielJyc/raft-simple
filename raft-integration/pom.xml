@@ -17,6 +17,11 @@
             <groupId>top.datadriven.raft</groupId>
             <artifactId>raft-core-model</artifactId>
         </dependency>
+        <dependency>
+            <groupId>top.datadriven.raft</groupId>
+            <artifactId>raft-facade</artifactId>
+        </dependency>
+
 
         <!--外部依赖-->
 

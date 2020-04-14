@@ -15,7 +15,7 @@
         <!--内部依赖-->
         <dependency>
             <groupId>top.datadriven.raft</groupId>
-            <artifactId>raft-core-model</artifactId>
+            <artifactId>raft-integration</artifactId>
         </dependency>
 
         <!--外部依赖-->
