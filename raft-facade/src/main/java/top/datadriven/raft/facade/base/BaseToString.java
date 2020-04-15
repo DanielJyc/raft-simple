@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @description: 基础类
  * @author: jiayancheng
  * @email: jiayancheng@foxmail.com
- * @datetime: 2018/2/9 上午9:07
+ * @datetime: 2020/04/14 下午9:07
  * @version: 1.0.0
  */
 public class BaseToString implements Serializable {
