@@ -13,8 +13,11 @@ import top.datadriven.raft.facade.model.VoteResponse;
 public interface VoteService {
     /**
      * 广播投票
+     * 备注：同步获取投票结果
+     *
+     * @return 投票结果
      */
-    void broadcastVote();
+    Boolean broadcastVote();
 
     /**
      * 发起投票

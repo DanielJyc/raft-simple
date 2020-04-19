@@ -20,5 +20,4 @@ public class LogEntryModel extends BaseToString {
     private Long term;
     private String option;
     private String data;
-
 }

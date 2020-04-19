@@ -1,4 +1,4 @@
-package top.datadriven.raft.common.util.exception;
+package top.datadriven.raft.core.model.exception;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,19 +22,9 @@ public enum ErrorCodeEnum {
 
     NOT_SUPPORT_TYPE("NOT_SUPPORT_TYPE", "不支持的类型"),
 
-    CACHE_ERROR("CACHE_ERROR", "缓存操作异常"),
-
-    DECISION_TREE_ERROR("DECISION_TREE_ERROR", "决策树异常"),
-
-    TREE_NODE_ERROR("TREE_NODE_ERROR", "决策树节点异常"),
-
-    RULE_ERROR("RULE_ERROR", "规则异常"),
-
-    ACTION_ERROR("ACTION_ERROR", "动作ACTION异常"),
-
     PARAM_ERROR("PARAM_ERROR", "参数异常"),
 
-    CONVERT_ERROR("CONVERT_ERROR", "转换异常"),
+    CHANNEL_ERROR("CHANNEL_ERROR", "channel通知异常"),
 
     ;
 
@@ -42,13 +32,13 @@ public enum ErrorCodeEnum {
      * 枚举code
      */
     @Getter
-    private String code;
+    private final String code;
 
     /**
      * 枚举说明
      */
     @Getter
-    private String desc;
+    private final String desc;
 
     /**
      * 根据code获取枚举【不忽略大小写】

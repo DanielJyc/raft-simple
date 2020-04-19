@@ -10,5 +10,15 @@
     <!--开启自动扫描，并注册bean-->
     <context:component-scan base-package="top.datadriven.raft.core.service"/>
 
+    <bean id="derverStateFactory"
+          class="top.datadriven.raft.core.service.transformer.ServerStateFactory">
+        <property name="stateMap">
+            <map>
+                <entry key="LEADER" value-ref="leaderStateImpl"/>
+                <entry key="CANDIDATE" value-ref="candidateStateImpl"/>
+                <entry key="FOLLOWER" value-ref="followerStateImpl"/>
+            </map>
+        </property>
+    </bean>
 
 </beans>

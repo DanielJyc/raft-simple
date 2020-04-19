@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
  * @version: 1.0.0
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public enum RaftStatusEnum {
+public enum ServerStateEnum {
 
     /**
      * 节点状态(角色)
@@ -40,8 +40,8 @@ public enum RaftStatusEnum {
      * @param code 枚举code
      * @return 枚举
      */
-    public RaftStatusEnum getByCode(String code) {
-        for (RaftStatusEnum anEnum : RaftStatusEnum.values()) {
+    public ServerStateEnum getByCode(String code) {
+        for (ServerStateEnum anEnum : ServerStateEnum.values()) {
             if (StringUtils.equals(anEnum.getCode(), code)) {
                 return anEnum;
             }

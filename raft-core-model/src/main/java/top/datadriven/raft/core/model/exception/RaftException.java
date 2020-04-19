@@ -1,4 +1,4 @@
-package top.datadriven.raft.common.util.exception;
+package top.datadriven.raft.core.model.exception;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class DecisionException extends RuntimeException {
+public class RaftException extends RuntimeException {
 
     private static final long serialVersionUID = 6100413904443364600L;
 
@@ -20,7 +20,6 @@ public class DecisionException extends RuntimeException {
      * 错误码枚举
      */
     private ErrorCodeEnum errorCodeEnum;
-
 
     /**
      * 详细错误信息
@@ -34,24 +33,24 @@ public class DecisionException extends RuntimeException {
     private Throwable originalThrowable;
 
 
-    public DecisionException(ErrorCodeEnum errorCodeEnum) {
+    public RaftException(ErrorCodeEnum errorCodeEnum) {
         super(errorCodeEnum.getCode());
         this.errorCodeEnum = errorCodeEnum;
     }
 
-    public DecisionException(ErrorCodeEnum errorCodeEnum, String detailErrorMsg) {
+    public RaftException(ErrorCodeEnum errorCodeEnum, String detailErrorMsg) {
         super(errorCodeEnum.getCode());
         this.errorCodeEnum = errorCodeEnum;
         this.detailErrorMsg = detailErrorMsg;
     }
 
-    public DecisionException(ErrorCodeEnum errorCodeEnum, Throwable originalThrowable) {
+    public RaftException(ErrorCodeEnum errorCodeEnum, Throwable originalThrowable) {
         super(errorCodeEnum.getCode(), originalThrowable);
         this.errorCodeEnum = errorCodeEnum;
         this.originalThrowable = originalThrowable;
     }
 
-    public DecisionException(ErrorCodeEnum errorCodeEnum, String detailErrorMsg, Throwable originalThrowable) {
+    public RaftException(ErrorCodeEnum errorCodeEnum, String detailErrorMsg, Throwable originalThrowable) {
         super(errorCodeEnum.getCode(), originalThrowable);
         this.errorCodeEnum = errorCodeEnum;
         this.detailErrorMsg = detailErrorMsg;

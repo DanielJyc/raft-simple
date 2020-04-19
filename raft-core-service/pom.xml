@@ -17,8 +17,24 @@
             <groupId>top.datadriven.raft</groupId>
             <artifactId>raft-integration</artifactId>
         </dependency>
+        <dependency>
+            <groupId>top.datadriven.raft</groupId>
+            <artifactId>raft-config-loader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>top.datadriven.raft</groupId>
+            <artifactId>raft-core-model</artifactId>
+        </dependency>
 
         <!--外部依赖-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
 
     </dependencies>
 

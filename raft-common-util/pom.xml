@@ -13,10 +13,6 @@
 
     <dependencies>
         <!--内部依赖-->
-        <dependency>
-            <groupId>top.datadriven.raft</groupId>
-            <artifactId>raft-config-loader</artifactId>
-        </dependency>
 
         <!--外部依赖-->
         <!--lombok-->

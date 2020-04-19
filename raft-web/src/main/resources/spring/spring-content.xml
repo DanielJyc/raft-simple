@@ -8,13 +8,13 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-4.0.xsd">
     <!--加载文件配置变量-->
-    <context:property-placeholder location="classpath:props/dataservice.properties"/>
+    <context:property-placeholder location="classpath:props/raft.properties"/>
 
     <!-- 允许使用@Value -->
     <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="locations">
             <list>
-                <value>classpath:props/dataservice.properties</value>
+                <value>classpath:props/raft.properties</value>
             </list>
         </property>
     </bean>

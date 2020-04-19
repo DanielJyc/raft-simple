@@ -11,6 +11,7 @@ public interface AppendEntriesService {
 
     /**
      * 广播附加日志条目（或者心跳）
+     * 备注：不需要等待结果
      */
     void broadcastAppendEntries();
 }

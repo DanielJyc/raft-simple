@@ -13,5 +13,20 @@ public class CommonConstant {
      * 逗号
      */
     public static final String COMMA = ",";
-    
+
+    /**
+     * 初始term值
+     */
+    public static final Long INIT_TERM = 0L;
+
+    /**
+     * 初始index
+     */
+    public static final Long INIT_INDEX = 0L;
+
+    /**
+     * 心跳间隔时间，单位ms
+     */
+    public static final int HEARTBEAT_INTERVAL = 1000;
+
 }

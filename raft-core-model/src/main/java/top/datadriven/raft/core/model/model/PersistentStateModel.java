@@ -20,7 +20,12 @@ public class PersistentStateModel extends BaseToString {
     private static final long serialVersionUID = 614565993931190984L;
 
     private Long currentTerm;
+
+    /**
+     * 在 currentTerm 获得选票的serverId。如果没有投票则为null
+     */
     private Long votedFor;
+
     private List<LogEntryModel> logEntries;
 
 }

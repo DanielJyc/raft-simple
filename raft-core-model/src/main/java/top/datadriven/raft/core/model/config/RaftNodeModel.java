@@ -16,7 +16,7 @@ import top.datadriven.raft.facade.base.BaseToString;
 public class RaftNodeModel extends BaseToString {
     private static final long serialVersionUID = -2921302830680312336L;
 
-    private Long id;
+    private Long serverId;
     private String ip;
     private String port;
 
