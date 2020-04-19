@@ -23,7 +23,9 @@ public class PersistentStateModel extends BaseToString {
 
     /**
      * 在 currentTerm 获得选票的serverId。如果没有投票则为null
-     * 处理逻辑：follower给candidate投票成功，则
+     * 改变 votedFor 的两种情况：
+     * *   一是 Follower/Candidate 超时变为 Candidate 时，term 会增加 1，这时候先无脑投自己（rf.votedFor = rf.me），然后发起选举；
+     * *   二是在收到其他 Peer 的 RPC 时（包括 Request 和 Reply），发现别人 term 高，变为 Follower 时，也需要及时清空自己之前投票结果（rf.votedFor = null）以使本轮次可以继续投票。
      */
     private Long votedFor;
 

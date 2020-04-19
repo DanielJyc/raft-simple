@@ -46,7 +46,8 @@ public class VoteServiceImpl implements VoteService {
 
             //3. 如果 votedFor 为空或者为 candidateId，并且候选人的日志
             // 至少和自己一样新，那么就投票给他（5.2 节，5.4 节）
-            if (upToDate(voteRequest, persistentState.getLogEntries())) {
+            if (upToDate(voteRequest, persistentState.getLogEntries())
+                    && notVoteOther(voteRequest, persistentState)) {
                 return new VoteResponse(currentTerm, Boolean.TRUE);
             } else {
                 return new VoteResponse(currentTerm, Boolean.FALSE);
@@ -58,12 +59,20 @@ public class VoteServiceImpl implements VoteService {
     }
 
     /**
+     * 还没投票给其他节点，则为true
+     * 逻辑：voteFor为空或者已经投票给请求的candidate了
+     */
+    private boolean notVoteOther(VoteRequest voteRequest,
+                                 PersistentStateModel persistentState) {
+        return persistentState.getVotedFor() == null
+                || persistentState.getVotedFor().equals(voteRequest.getCandidateId());
+    }
+
+    /**
      * Raft 通过比较两份日志中最后一条日志条目的索引值和任期号定义谁的日志比较新。
      * 比较逻辑：如果两份日志最后的条目的任期号不同，那么任期号大的日志更加新。
      * ********如果两份日志最后的条目任期号相同，那么日志比较长的那个就更加新。
      *
-     * @param voteRequest request
-     * @param logEntries  logs
      * @return ret 候选人的日志至少和自己一样新,则为true；否则为false
      */
     private boolean upToDate(VoteRequest voteRequest, List<LogEntryModel> logEntries) {
