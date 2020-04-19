@@ -9,7 +9,6 @@ import top.datadriven.raft.facade.model.LogEntryModel;
 import top.datadriven.raft.facade.model.VoteRequest;
 import top.datadriven.raft.facade.model.VoteResponse;
 
-import java.util.List;
 import java.util.concurrent.locks.Lock;
 
 /**
@@ -46,7 +45,7 @@ public class VoteServiceImpl implements VoteService {
 
             //3. 如果 votedFor 为空或者为 candidateId，并且候选人的日志
             // 至少和自己一样新，那么就投票给他（5.2 节，5.4 节）
-            if (upToDate(voteRequest, persistentState.getLogEntries())
+            if (upToDate(voteRequest, persistentState)
                     && notVoteOther(voteRequest, persistentState)) {
                 return new VoteResponse(currentTerm, Boolean.TRUE);
             } else {
@@ -59,7 +58,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     /**
-     * 还没投票给其他节点，则为true
+     * votedFor 为空或者为 candidateId（还没投票给其他节点），则为true
      * 逻辑：voteFor为空或者已经投票给请求的candidate了
      */
     private boolean notVoteOther(VoteRequest voteRequest,
@@ -75,9 +74,10 @@ public class VoteServiceImpl implements VoteService {
      *
      * @return ret 候选人的日志至少和自己一样新,则为true；否则为false
      */
-    private boolean upToDate(VoteRequest voteRequest, List<LogEntryModel> logEntries) {
+    private boolean upToDate(VoteRequest voteRequest,
+                             PersistentStateModel persistentState) {
         //数据准备
-        LogEntryModel lastLogEntry = logEntries.get(logEntries.size() - 1);
+        LogEntryModel lastLogEntry = persistentState.getLastEntry();
         Long requestLastLogTerm = voteRequest.getLastLogTerm();
         Long requestLastLogIndex = voteRequest.getLastLogIndex();
         Long currentLastLogTerm = lastLogEntry.getTerm();

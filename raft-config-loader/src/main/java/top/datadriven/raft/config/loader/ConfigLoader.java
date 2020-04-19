@@ -16,4 +16,11 @@ public interface ConfigLoader {
      * @return 配置
      */
     ConfigModel load();
+
+    /**
+     * 获取server的总数量
+     *
+     * @return 梳理
+     */
+    Integer getServerCount();
 }

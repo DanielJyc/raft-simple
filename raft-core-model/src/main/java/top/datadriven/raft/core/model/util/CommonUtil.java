@@ -17,4 +17,11 @@ public class CommonUtil {
     public static int getInterval(int start, int end) {
         return RandomUtil.randomInt(start * CommonConstant.HEARTBEAT_INTERVAL, end * CommonConstant.HEARTBEAT_INTERVAL);
     }
+
+    /**
+     * 获取多数节点的梳理：超过一半
+     */
+    public static int getMostCount(int allServerCount) {
+        return allServerCount / 2 + 1;
+    }
 }

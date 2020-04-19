@@ -1,4 +1,4 @@
-package top.datadriven.raft.core.model;
+package top.datadriven.raft.core.model.util;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;

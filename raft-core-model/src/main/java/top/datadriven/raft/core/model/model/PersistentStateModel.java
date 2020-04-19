@@ -31,4 +31,10 @@ public class PersistentStateModel extends BaseToString {
 
     private List<LogEntryModel> logEntries;
 
+    /**
+     * 获取最后一条写入的entry
+     */
+    public LogEntryModel getLastEntry() {
+        return logEntries.get(logEntries.size() - 1);
+    }
 }
