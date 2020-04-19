@@ -1,7 +1,6 @@
 package top.datadriven.raft.core.service.component;
 
 import top.datadriven.raft.facade.model.VoteRequest;
-import top.datadriven.raft.facade.model.VoteResponse;
 
 /**
  * @description: 发起投票服务
@@ -25,5 +24,5 @@ public interface VoteComponent {
      * @param voteRequest 请求
      * @return 投票结果
      */
-    VoteResponse requestVote(VoteRequest voteRequest);
+    Boolean requestVote(VoteRequest voteRequest);
 }
