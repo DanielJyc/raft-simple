@@ -6,7 +6,7 @@ import top.datadriven.raft.core.model.constant.CommonConstant;
 import top.datadriven.raft.core.model.enums.ServerStateEnum;
 import top.datadriven.raft.core.model.exception.ErrorCodeEnum;
 import top.datadriven.raft.core.model.exception.RaftException;
-import top.datadriven.raft.core.service.service.AppendEntriesService;
+import top.datadriven.raft.core.service.component.AppendEntriesComponent;
 import top.datadriven.raft.core.service.transformer.ServerStateTransformer;
 
 import javax.annotation.Resource;
@@ -23,7 +23,7 @@ import java.util.List;
 public class LeaderStateImpl implements ServerStateTransformer {
 
     @Resource
-    private AppendEntriesService appendEntriesService;
+    private AppendEntriesComponent appendEntriesComponent;
 
     /**
      * 每隔heartbeat时间，发送一次广播
@@ -33,7 +33,7 @@ public class LeaderStateImpl implements ServerStateTransformer {
     @Override
     public void execute() {
         //1.广播appendEntries或者心跳(entry为空)
-        appendEntriesService.broadcastAppendEntries();
+        appendEntriesComponent.broadcastAppendEntries();
 
         //2.休眠 heartbeat
         try {

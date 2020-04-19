@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import top.datadriven.raft.core.model.enums.ServerStateEnum;
 import top.datadriven.raft.core.model.model.PersistentStateModel;
 import top.datadriven.raft.core.model.model.RaftCoreModel;
-import top.datadriven.raft.core.service.service.VoteService;
+import top.datadriven.raft.core.service.component.VoteComponent;
 import top.datadriven.raft.core.service.transformer.ServerStateTransformer;
 
 import javax.annotation.Resource;
@@ -23,7 +23,7 @@ import java.util.concurrent.locks.Lock;
 public class CandidateStateImpl implements ServerStateTransformer {
 
     @Resource
-    private VoteService voteService;
+    private VoteComponent voteComponent;
 
     @Override
     public void execute() {
@@ -38,11 +38,11 @@ public class CandidateStateImpl implements ServerStateTransformer {
             coreModel.setVoteCount(1L);
 
             //2.candidate发起投票(广播)：使用CountDownLatch实现
-            Boolean voteResult = voteService.broadcastVote();
+            Boolean voteResult = voteComponent.broadcastVote();
 
             //3.根据投票结果进行设置
             if (voteResult) {
-                coreModel.setServerStatus(ServerStateEnum.LEADER);
+                coreModel.setServerStateEnum(ServerStateEnum.LEADER);
             }
         } finally {
             lock.unlock();

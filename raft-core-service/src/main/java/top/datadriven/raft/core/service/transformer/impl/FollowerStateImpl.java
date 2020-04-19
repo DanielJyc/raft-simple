@@ -38,7 +38,7 @@ public class FollowerStateImpl implements ServerStateTransformer {
         //2. 判断通知结果
         //如果心跳超时（结果为空），进行下一个状态；否则继续循环
         if (StringUtils.isBlank(channelFlag)) {
-            RaftCoreModel.getSingleton().setServerStatus(ServerStateEnum.LEADER);
+            RaftCoreModel.getSingleton().setServerStateEnum(ServerStateEnum.LEADER);
         }
 
         //3.执行后续节点

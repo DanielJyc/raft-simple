@@ -53,7 +53,7 @@ public class RaftCoreModel extends BaseToString {
      * 构造函数中，初始化数据。
      */
     private RaftCoreModel() {
-        serverStatus = ServerStateEnum.FOLLOWER;
+        serverStateEnum = ServerStateEnum.FOLLOWER;
 
         // persistent state
         persistentState = new PersistentStateModel();
@@ -78,7 +78,7 @@ public class RaftCoreModel extends BaseToString {
     /**
      * 当前server的状态
      */
-    private ServerStateEnum serverStatus;
+    private ServerStateEnum serverStateEnum;
 
     /**
      * 持久化数据

@@ -56,7 +56,7 @@ public interface ServerStateTransformer {
      * @return true:校验通过；false：校验不通过，不能进入该状态
      */
     default Boolean preCheck() {
-        return RaftCoreModel.getSingleton().getServerStatus() == getCurrentState();
+        return RaftCoreModel.getSingleton().getServerStateEnum() == getCurrentState();
     }
 
 }

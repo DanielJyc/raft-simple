@@ -23,6 +23,7 @@ public class PersistentStateModel extends BaseToString {
 
     /**
      * 在 currentTerm 获得选票的serverId。如果没有投票则为null
+     * 处理逻辑：follower给candidate投票成功，则
      */
     private Long votedFor;
 

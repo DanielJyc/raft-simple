@@ -1,4 +1,4 @@
-package top.datadriven.raft.core.service.service;
+package top.datadriven.raft.core.service.component;
 
 import top.datadriven.raft.facade.model.AppendEntriesRequest;
 import top.datadriven.raft.facade.model.AppendEntriesResponse;
@@ -10,7 +10,13 @@ import top.datadriven.raft.facade.model.AppendEntriesResponse;
  * @datetime: 2020/4/14 11:23 下午
  * @version: 1.0.0
  */
-public interface AppendEntriesService {
+public interface AppendEntriesComponent {
+
+    /**
+     * 广播附加日志条目（或者心跳）
+     * 备注：不需要等待结果
+     */
+    void broadcastAppendEntries();
 
     /**
      * 发起请求：附加日志
@@ -18,5 +24,5 @@ public interface AppendEntriesService {
      * @param appendEntriesRequest 请求
      * @return 结果
      */
-    AppendEntriesResponse receiveAppendEntries(AppendEntriesRequest appendEntriesRequest);
+    AppendEntriesResponse requestAppendEntries(AppendEntriesRequest appendEntriesRequest);
 }
