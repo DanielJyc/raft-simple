@@ -25,6 +25,10 @@
             <groupId>top.datadriven.raft</groupId>
             <artifactId>raft-core-model</artifactId>
         </dependency>
+        <dependency>
+            <groupId>top.datadriven.raft</groupId>
+            <artifactId>raft-state-machine</artifactId>
+        </dependency>
 
         <!--外部依赖-->
         <dependency>
