@@ -27,23 +27,6 @@ public class RaftCoreModel extends BaseToString {
     private static final long serialVersionUID = -4367174548580870292L;
 
     /**
-     * 共用一把锁
-     * 说明：这里为了实现简单，不再使用细粒度的锁。当然，后面可以优化为使用更细粒度的锁。
-     */
-    private static Lock lock = new ReentrantLock();
-
-    public static Condition condition = lock.newCondition();
-
-    /*==============================异步通知channel=============================*/
-    /**
-     * 心跳超时控制：用来判断Follower态是否心跳超时
-     * 实现方式：长度为1的阻塞队列，follower定时从里面取出标志数据。当收到投票请求或者appendEntries请求时，放入1次标志位。
-     * follower时：放入速度>取出速度。
-     */
-    private LinkedBlockingQueue<String> heartbeatChannel = new LinkedBlockingQueue<>(1);
-
-
-    /**
      * 饿汉模式单例
      */
     private static RaftCoreModel raftCoreModel = new RaftCoreModel();
@@ -99,6 +82,31 @@ public class RaftCoreModel extends BaseToString {
      * candidate数据：candidate获得的投票数
      */
     private Long voteCount;
+
+    /*==============================异步通知channel=============================*/
+    /**
+     * 心跳超时控制：用来判断Follower态是否心跳超时
+     * 实现方式：长度为1的阻塞队列，follower定时从里面取出标志数据。当收到投票请求或者appendEntries请求时，放入1次标志位。
+     * follower时：放入速度>取出速度。
+     * queue方法使用：https://blog.csdn.net/z69183787/article/details/46986823
+     */
+    private LinkedBlockingQueue<String> heartbeatChannel = new LinkedBlockingQueue<>(1);
+
+    /**
+     * 用于commit entry 通知
+     */
+    private LinkedBlockingQueue<String> commitChannel = new LinkedBlockingQueue<>(1);
+
+    /*==============================锁=============================*/
+    /**
+     * 共用一把锁
+     * 说明：这里为了实现简单，不再使用细粒度的锁。当然，后面可以优化为使用更细粒度的锁。
+     */
+    private static Lock lock = new ReentrantLock();
+
+    public static Condition condition = lock.newCondition();
+
+
 
     /*================================辅助函数=================================*/
 

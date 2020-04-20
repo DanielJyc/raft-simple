@@ -26,6 +26,8 @@ public enum ErrorCodeEnum {
 
     CHANNEL_ERROR("CHANNEL_ERROR", "channel通知异常"),
 
+    DATA_NOT_EXIT("DATA_NOT_EXIT", "数据不存在"),
+
     ;
 
     /**

@@ -22,6 +22,7 @@ import java.util.concurrent.locks.Lock;
 public class VoteServiceImpl implements VoteService {
     @Override
     public VoteResponse receiveVote(VoteRequest voteRequest) {
+        //0.数据准备
         RaftCoreModel coreModel = RaftCoreModel.getSingleton();
         PersistentStateModel persistentState = coreModel.getPersistentState();
         Long term = voteRequest.getTerm();

@@ -2,6 +2,8 @@ package top.datadriven.raft.core.model.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import top.datadriven.raft.core.model.exception.ErrorCodeEnum;
+import top.datadriven.raft.core.model.exception.RaftException;
 import top.datadriven.raft.facade.base.BaseToString;
 import top.datadriven.raft.facade.model.LogEntryModel;
 
@@ -31,10 +33,22 @@ public class PersistentStateModel extends BaseToString {
 
     private List<LogEntryModel> logEntries;
 
+    /*==============================辅助函数=============================*/
+
     /**
      * 获取最后一条写入的entry
      */
     public LogEntryModel getLastEntry() {
         return logEntries.get(logEntries.size() - 1);
+    }
+
+    /**
+     * 根据index获取term，不存在则抛异常
+     */
+    public Long getTermByIndex(Long index) {
+        if (getLastEntry().getIndex() > index) {
+            throw new RaftException(ErrorCodeEnum.DATA_NOT_EXIT, "index过大，当前server不存在");
+        }
+        return logEntries.get(Math.toIntExact(index)).getTerm();
     }
 }

@@ -10,9 +10,9 @@ package top.datadriven.raft.core.model.constant;
 public class CommonConstant {
 
     /**
-     * 逗号
+     * 通知channel 标志
      */
-    public static final String COMMA = ",";
+    public static final String CHANNEL_FLAG = "FLAG";
 
     /**
      * 初始term值
