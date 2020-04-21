@@ -12,9 +12,4 @@ public interface StateMachineHandler {
      * commit到apply状态
      */
     void commit2Apply();
-
-    /**
-     * apply应用到状态机
-     */
-    void apply2Sm();
 }

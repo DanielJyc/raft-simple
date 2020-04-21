@@ -55,8 +55,4 @@ public class StateMachineHandlerImpl implements StateMachineHandler {
         }
     }
 
-    @Override
-    public void apply2Sm() {
-
-    }
 }

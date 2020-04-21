@@ -1,6 +1,7 @@
 package top.datadriven.raft.core.service.service.impl;
 
 import cn.hutool.core.util.NumberUtil;
+import org.springframework.stereotype.Service;
 import top.datadriven.raft.core.model.constant.CommonConstant;
 import top.datadriven.raft.core.model.enums.ServerStateEnum;
 import top.datadriven.raft.core.model.model.PersistentStateModel;
@@ -20,6 +21,7 @@ import java.util.concurrent.locks.Lock;
  * @datetime: 2020/4/20 7:54 下午
  * @version: 1.0.0
  */
+@Service
 public class AppendEntriesServiceImpl implements AppendEntriesService {
     @Override
     public AppendEntriesResponse receiveAppendEntries(AppendEntriesRequest request) {

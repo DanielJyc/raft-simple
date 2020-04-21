@@ -7,6 +7,7 @@ import top.datadriven.raft.core.model.config.ConfigModel;
 import top.datadriven.raft.core.model.exception.RaftException;
 import top.datadriven.raft.core.model.model.RaftCoreModel;
 import top.datadriven.raft.core.service.component.RaftCoreComponent;
+import top.datadriven.raft.core.service.handler.StateMachineHandler;
 import top.datadriven.raft.core.service.transformer.ServerStateTransformerStarter;
 
 import javax.annotation.Resource;
@@ -28,6 +29,9 @@ public class RaftCoreComponentImpl implements RaftCoreComponent {
     @Resource
     private ServerStateTransformerStarter serverStateTransformerStarter;
 
+    @Resource
+    private StateMachineHandler stateMachineHandler;
+
     @Override
     public void start() {
         try {
@@ -42,6 +46,9 @@ public class RaftCoreComponentImpl implements RaftCoreComponent {
 
             //4. 启动server 状态流转
             serverStateTransformerStarter.start();
+
+            //5. 启动状态机
+            stateMachineHandler.commit2Apply();
         } catch (RaftException raftException) {
             log.error(raftException.getErrorMsg(), raftException);
         } catch (Throwable t) {
