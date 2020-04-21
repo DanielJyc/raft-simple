@@ -1,10 +1,10 @@
 package top.datadriven.raft.core.service.service.impl;
 
 import org.springframework.stereotype.Service;
-import top.datadriven.raft.core.model.enums.ServerStateEnum;
 import top.datadriven.raft.core.model.model.PersistentStateModel;
 import top.datadriven.raft.core.model.model.RaftCoreModel;
 import top.datadriven.raft.core.service.service.VoteService;
+import top.datadriven.raft.core.service.transformer.convertor.FollowerConvertor;
 import top.datadriven.raft.facade.model.LogEntryModel;
 import top.datadriven.raft.facade.model.VoteRequest;
 import top.datadriven.raft.facade.model.VoteResponse;
@@ -40,9 +40,7 @@ public class VoteServiceImpl implements VoteService {
             //2.如果接收到的 RPC 请求或响应中，任期号T > currentTerm，
             // 那么就令 currentTerm 等于 T，并切换状态为跟随者（5.1 节）
             if (term > currentTerm) {
-                coreModel.setServerStateEnum(ServerStateEnum.FOLLOWER);
-                persistentState.setCurrentTerm(term);
-                persistentState.setVotedFor(null);
+                FollowerConvertor.convert2Follower(term, coreModel);
             }
 
             //3. 如果 votedFor 为空或者为 candidateId，并且候选人的日志

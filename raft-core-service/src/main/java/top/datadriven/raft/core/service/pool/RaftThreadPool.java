@@ -18,7 +18,7 @@ public class RaftThreadPool {
     /**
      * 线程工厂，提供创建新线程的功能。
      */
-    private static final ThreadFactory threadFactory = new ThreadFactoryBuilder()
+    private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder()
             .setNameFormat("raft-pool-%d").build();
 
     /**
@@ -35,7 +35,7 @@ public class RaftThreadPool {
             //线程池中的任务队列.（超过核心线程的数量，被放到这里）
             new LinkedBlockingDeque<>(1024),
             //线程工厂，提供创建新线程的功能。
-            threadFactory,
+            THREAD_FACTORY,
             //当达到最大线程数，且队列已满情况下，执行拒绝策略:抛异常
             new ThreadPoolExecutor.AbortPolicy());
 

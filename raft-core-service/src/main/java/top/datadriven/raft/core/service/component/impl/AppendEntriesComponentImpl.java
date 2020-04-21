@@ -5,15 +5,18 @@ import top.datadriven.raft.config.loader.ConfigLoader;
 import top.datadriven.raft.core.model.config.ConfigModel;
 import top.datadriven.raft.core.model.config.RaftNodeModel;
 import top.datadriven.raft.core.model.constant.CommonConstant;
+import top.datadriven.raft.core.model.enums.ServerStateEnum;
 import top.datadriven.raft.core.model.model.PersistentStateModel;
 import top.datadriven.raft.core.model.model.RaftCoreModel;
 import top.datadriven.raft.core.model.model.ServerStateModel;
 import top.datadriven.raft.core.model.util.CommonUtil;
 import top.datadriven.raft.core.service.component.AppendEntriesComponent;
 import top.datadriven.raft.core.service.pool.RaftThreadPool;
+import top.datadriven.raft.core.service.transformer.convertor.FollowerConvertor;
 import top.datadriven.raft.facade.model.AppendEntriesRequest;
 import top.datadriven.raft.facade.model.AppendEntriesResponse;
 import top.datadriven.raft.facade.model.LogEntryModel;
+import top.datadriven.raft.integration.RaftClient;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -33,6 +36,9 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
     @Resource
     private ConfigLoader configLoader;
 
+    @Resource
+    private RaftClient raftClient;
+
     @Override
     public void broadcastAppendEntries() {
         ConfigModel configModel = configLoader.load();
@@ -51,7 +57,6 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
             Long lastApplied = serverState.getLastApplied();
             Map<Long, Integer> matchIndex = coreModel.getLeaderState().getMatchIndex();
             Map<Long, Integer> nextIndex = coreModel.getLeaderState().getNextIndex();
-            Long lastIndex = persistentState.getLastEntry().getIndex();
 
             //1.找到N
             Long indexMaxN = getMaxN(persistentState, commitIndex,
@@ -78,7 +83,7 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
                 request.setLogEntries(logEntries.subList(startIndex, endIndex));
 
                 //2.2 线程池 异步发起单个请求
-                RaftThreadPool.execute(() -> requestAppendEntries(request));
+                RaftThreadPool.execute(() -> requestAppendEntries(remoteNode.getServerId(), request));
             }
 
         } finally {
@@ -88,9 +93,43 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
 
 
     @Override
-    public AppendEntriesResponse requestAppendEntries(AppendEntriesRequest appendEntriesRequest) {
+    public void requestAppendEntries(Long serverId, AppendEntriesRequest request) {
+        //1.发起RPC请求
+        AppendEntriesResponse response = raftClient.appendEntries(request);
 
-        return null;
+        Lock lock = RaftCoreModel.getLock();
+        lock.lock();
+        try {
+            //0.数据准备
+            RaftCoreModel coreModel = RaftCoreModel.getSingleton();
+            PersistentStateModel persistentState = coreModel.getPersistentState();
+            Long currentTerm = persistentState.getCurrentTerm();
+            Map<Long, Integer> matchIndex = coreModel.getLeaderState().getMatchIndex();
+            Map<Long, Integer> nextIndex = coreModel.getLeaderState().getNextIndex();
+
+            //2. 当前节点被废黜，或任期号变更了,不对回复值做处理
+            if (coreModel.getServerStateEnum() != ServerStateEnum.LEADER
+                    || !currentTerm.equals(request.getTerm())) {
+                return;
+            }
+
+            //3.Follower发送了更新的任期号，则leader将自己降为Follower
+            if (response.getTerm() > currentTerm) {
+                FollowerConvertor.convert2Follower(response.getTerm(), coreModel);
+            }
+
+            //4. 判断结果，为true: nextIndex和matchIndex加一
+            if (response.getSuccess()) {
+                nextIndex.put(serverId, nextIndex.get(serverId) + 1);
+                matchIndex.put(serverId, matchIndex.get(serverId) + 1);
+            }
+            // 为false: nextIndex减一
+            else {
+                nextIndex.put(serverId, nextIndex.get(serverId) - 1);
+            }
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**

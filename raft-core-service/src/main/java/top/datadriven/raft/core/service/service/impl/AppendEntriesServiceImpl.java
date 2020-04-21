@@ -3,11 +3,11 @@ package top.datadriven.raft.core.service.service.impl;
 import cn.hutool.core.util.NumberUtil;
 import org.springframework.stereotype.Service;
 import top.datadriven.raft.core.model.constant.CommonConstant;
-import top.datadriven.raft.core.model.enums.ServerStateEnum;
 import top.datadriven.raft.core.model.model.PersistentStateModel;
 import top.datadriven.raft.core.model.model.RaftCoreModel;
 import top.datadriven.raft.core.model.model.ServerStateModel;
 import top.datadriven.raft.core.service.service.AppendEntriesService;
+import top.datadriven.raft.core.service.transformer.convertor.FollowerConvertor;
 import top.datadriven.raft.facade.model.AppendEntriesRequest;
 import top.datadriven.raft.facade.model.AppendEntriesResponse;
 import top.datadriven.raft.facade.model.LogEntryModel;
@@ -47,9 +47,7 @@ public class AppendEntriesServiceImpl implements AppendEntriesService {
             //3.如果接收到的 RPC 请求或响应中，任期号term > currentTerm，那么就令 currentTerm 等于 T，并切换状态为跟随者（5.1 节）
             // 如图7的文字描述的(f)
             if (term > currentTerm) {
-                persistentState.setCurrentTerm(term);
-                coreModel.setServerStateEnum(ServerStateEnum.FOLLOWER);
-                persistentState.setVotedFor(null);
+                FollowerConvertor.convert2Follower(term, coreModel);
             }
 
             //4.日志太新（leader的上一条日志大于当前server的最新日志index，实际应该等于）:告诉leader更新index

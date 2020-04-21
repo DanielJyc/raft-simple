@@ -16,6 +16,7 @@ import top.datadriven.raft.core.model.model.RaftCoreModel;
 import top.datadriven.raft.core.model.util.CommonUtil;
 import top.datadriven.raft.core.service.component.VoteComponent;
 import top.datadriven.raft.core.service.pool.RaftThreadPool;
+import top.datadriven.raft.core.service.transformer.convertor.FollowerConvertor;
 import top.datadriven.raft.facade.api.RaftFacade;
 import top.datadriven.raft.facade.model.LogEntryModel;
 import top.datadriven.raft.facade.model.VoteRequest;
@@ -111,9 +112,7 @@ public class VoteComponentImpl implements VoteComponent {
 
         //3.如果response的term大于currentTerm，则转换为follower
         if (response.getTerm() > currentTerm) {
-            coreModel.setServerStateEnum(ServerStateEnum.FOLLOWER);
-            persistentState.setVotedFor(null);
-            persistentState.setCurrentTerm(response.getTerm());
+            FollowerConvertor.convert2Follower(response.getTerm(), coreModel);
             return Boolean.FALSE;
         }
         //4.返回投票结果
