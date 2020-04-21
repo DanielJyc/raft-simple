@@ -55,6 +55,7 @@ public class RaftCoreModel extends BaseToString {
 
     /**
      * 当前server的id
+     * TODO 可以从配置中获取到，所以该字段其实可以去掉
      */
     private Long serverId;
 

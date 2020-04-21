@@ -42,6 +42,14 @@ public class PersistentStateModel extends BaseToString {
         return logEntries.get(logEntries.size() - 1);
     }
 
+
+    /**
+     * 获取倒数第二条写入的entry
+     */
+    public LogEntryModel getPreEntry() {
+        return logEntries.get(logEntries.size() - 2);
+    }
+
     /**
      * 根据index获取term，不存在则抛异常
      */

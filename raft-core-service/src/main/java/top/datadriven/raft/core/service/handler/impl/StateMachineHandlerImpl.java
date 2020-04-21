@@ -10,7 +10,6 @@ import top.datadriven.raft.state.machine.StateMachine;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 
 /**
@@ -37,10 +36,9 @@ public class StateMachineHandlerImpl implements StateMachineHandler {
                 RaftCoreModel coreModel = RaftCoreModel.getSingleton();
                 List<LogEntryModel> entries = coreModel.getPersistentState().getLogEntries();
                 ServerStateModel serverState = coreModel.getServerState();
-                LinkedBlockingQueue<String> commitChannel = coreModel.getCommitChannel();
 
                 //1.阻塞等待 take:若队列为空，发生阻塞，等待有元素。
-                commitChannel.take();
+                coreModel.getCommitChannel().take();
 
                 //2.接到通知后，apply 到状态机
                 for (long i = serverState.getLastApplied() + 1; i <= serverState.getCommitIndex(); i++) {

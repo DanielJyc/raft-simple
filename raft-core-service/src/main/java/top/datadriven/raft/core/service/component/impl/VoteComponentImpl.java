@@ -24,6 +24,7 @@ import top.datadriven.raft.facade.model.VoteResponse;
 import javax.annotation.Resource;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 
 /**
  * @description: 投票
@@ -44,16 +45,23 @@ public class VoteComponentImpl implements VoteComponent {
 
     @Override
     public Boolean broadcastVote() {
-        RaftCoreModel coreModel = RaftCoreModel.getSingleton();
-        PersistentStateModel persistentState = coreModel.getPersistentState();
-
-        //1. 组装入参
+        Lock lock = RaftCoreModel.getLock();
         VoteRequest voteRequest = new VoteRequest();
-        voteRequest.setTerm(persistentState.getCurrentTerm());
-        voteRequest.setCandidateId(coreModel.getServerId());
-        LogEntryModel lastLogEntry = persistentState.getLastEntry();
-        voteRequest.setLastLogIndex(lastLogEntry.getIndex());
-        voteRequest.setLastLogTerm(lastLogEntry.getTerm());
+        lock.lock();
+        try {
+            //0.数据准备
+            RaftCoreModel coreModel = RaftCoreModel.getSingleton();
+            PersistentStateModel persistentState = coreModel.getPersistentState();
+            LogEntryModel lastLogEntry = persistentState.getLastEntry();
+
+            //1. 组装入参
+            voteRequest.setTerm(persistentState.getCurrentTerm());
+            voteRequest.setCandidateId(coreModel.getServerId());
+            voteRequest.setLastLogIndex(lastLogEntry.getIndex());
+            voteRequest.setLastLogTerm(lastLogEntry.getTerm());
+        } finally {
+            lock.unlock();
+        }
 
         //2.线程池发起请求
         CountDownLatch countDownLatch = new CountDownLatch(CommonUtil.getMostCount(configLoader.getServerCount()));

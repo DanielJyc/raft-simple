@@ -22,15 +22,16 @@ import java.util.concurrent.locks.Lock;
 public class VoteServiceImpl implements VoteService {
     @Override
     public VoteResponse receiveVote(VoteRequest voteRequest) {
-        //0.数据准备
-        RaftCoreModel coreModel = RaftCoreModel.getSingleton();
-        PersistentStateModel persistentState = coreModel.getPersistentState();
-        Long term = voteRequest.getTerm();
-        Long currentTerm = persistentState.getCurrentTerm();
         Lock lock = RaftCoreModel.getLock();
         lock.lock();
 
         try {
+            //0.数据准备
+            RaftCoreModel coreModel = RaftCoreModel.getSingleton();
+            PersistentStateModel persistentState = coreModel.getPersistentState();
+            Long term = voteRequest.getTerm();
+            Long currentTerm = persistentState.getCurrentTerm();
+
             //1. 如果term < currentTerm返回 false （5.2 节）
             if (term < currentTerm) {
                 return new VoteResponse(currentTerm, Boolean.FALSE);
