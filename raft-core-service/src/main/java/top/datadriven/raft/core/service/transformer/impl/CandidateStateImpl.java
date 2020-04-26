@@ -2,6 +2,7 @@ package top.datadriven.raft.core.service.transformer.impl;
 
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
+import top.datadriven.raft.config.loader.ConfigLoader;
 import top.datadriven.raft.core.model.enums.ServerStateEnum;
 import top.datadriven.raft.core.model.model.PersistentStateModel;
 import top.datadriven.raft.core.model.model.RaftCoreModel;
@@ -27,13 +28,14 @@ public class CandidateStateImpl implements ServerStateTransformer {
 
     @Override
     public void execute() {
-        RaftCoreModel coreModel = RaftCoreModel.getSingleton();
-        PersistentStateModel persistentState = coreModel.getPersistentState();
         Lock lock = RaftCoreModel.getLock();
         lock.lock();
         try {
+            RaftCoreModel coreModel = RaftCoreModel.getSingleton();
+            PersistentStateModel persistentState = coreModel.getPersistentState();
+
             //1.给自己投票:投一票、term+1
-            persistentState.setVotedFor(coreModel.getServerId());
+            persistentState.setVotedFor(ConfigLoader.load().getCurrentServerId());
             persistentState.setCurrentTerm(persistentState.getCurrentTerm() + 1);
             coreModel.setVoteCount(1L);
 

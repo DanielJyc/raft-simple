@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import org.springframework.stereotype.Component;
 import top.datadriven.raft.config.loader.ConfigLoader;
+import top.datadriven.raft.core.model.config.ConfigModel;
 import top.datadriven.raft.core.model.enums.ServerStateEnum;
 import top.datadriven.raft.core.model.exception.ErrorCodeEnum;
 import top.datadriven.raft.core.model.exception.RaftException;
@@ -51,10 +52,11 @@ public class VoteComponentImpl implements VoteComponent {
             RaftCoreModel coreModel = RaftCoreModel.getSingleton();
             PersistentStateModel persistentState = coreModel.getPersistentState();
             LogEntryModel lastLogEntry = persistentState.getLastEntry();
+            ConfigModel configModel = ConfigLoader.load();
 
             //1. 组装入参
             voteRequest.setTerm(persistentState.getCurrentTerm());
-            voteRequest.setCandidateId(coreModel.getServerId());
+            voteRequest.setCandidateId(configModel.getCurrentServerId());
             voteRequest.setLastLogIndex(lastLogEntry.getIndex());
             voteRequest.setLastLogTerm(lastLogEntry.getTerm());
         } finally {

@@ -21,4 +21,13 @@ public class ConfigModel extends BaseToString {
     private RaftNodeModel localNode;
     private List<RaftNodeModel> remoteNodes;
 
+    /**
+     * 获取当前server的id
+     *
+     * @return id
+     */
+    public Long getCurrentServerId() {
+        return localNode.getServerId();
+    }
+
 }

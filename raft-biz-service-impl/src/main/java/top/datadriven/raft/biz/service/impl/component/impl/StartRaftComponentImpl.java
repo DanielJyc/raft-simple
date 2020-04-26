@@ -3,10 +3,7 @@ package top.datadriven.raft.biz.service.impl.component.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import top.datadriven.raft.biz.service.impl.component.StartRaftComponent;
-import top.datadriven.raft.config.loader.ConfigLoader;
-import top.datadriven.raft.core.model.config.ConfigModel;
 import top.datadriven.raft.core.model.exception.RaftException;
-import top.datadriven.raft.core.model.model.RaftCoreModel;
 import top.datadriven.raft.core.service.handler.StateMachineHandler;
 import top.datadriven.raft.core.service.transformer.ServerStateTransformerStarter;
 
@@ -32,19 +29,10 @@ public class StartRaftComponentImpl implements StartRaftComponent {
     @Override
     public void start() {
         try {
-            //1. 加载配置
-            ConfigModel configModel = ConfigLoader.load();
-
-            //2. 启动dubbo rpc服务；并设置远程节点的访问client TODO
-
-            //3. 变量初始化：刚启动时不会有其他线程访问core model，不用枷锁
-            RaftCoreModel coreModel = RaftCoreModel.getSingleton();
-            coreModel.setServerId(configModel.getLocalNode().getServerId());
-
-            //4. 启动server 状态流转
+            //1. 启动server 状态流转
             serverStateTransformerStarter.start();
 
-            //5. 启动状态机
+            //2. 启动状态机
             stateMachineHandler.commit2Apply();
         } catch (RaftException raftException) {
             log.error(raftException.getErrorMsg(), raftException);
