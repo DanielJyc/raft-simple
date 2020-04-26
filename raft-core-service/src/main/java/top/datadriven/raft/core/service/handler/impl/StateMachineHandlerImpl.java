@@ -40,7 +40,7 @@ public class StateMachineHandlerImpl implements StateMachineHandler {
                 //1.阻塞等待 take:若队列为空，发生阻塞，等待有元素。
                 coreModel.getCommitChannel().take();
 
-                //2.接到通知后，apply 到状态机
+                //2.接到通知后，apply 到状态机：将logs[lastApplied+1, commitIndex] apply
                 for (long i = serverState.getLastApplied() + 1; i <= serverState.getCommitIndex(); i++) {
                     stateMachine.execute(entries.get((int) i));
                     serverState.setLastApplied(serverState.getLastApplied() + 1);

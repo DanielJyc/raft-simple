@@ -1,12 +1,12 @@
-package top.datadriven.raft.core.service.component.impl;
+package top.datadriven.raft.biz.service.impl.component.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import top.datadriven.raft.biz.service.impl.component.StartRaftComponent;
 import top.datadriven.raft.config.loader.ConfigLoader;
 import top.datadriven.raft.core.model.config.ConfigModel;
 import top.datadriven.raft.core.model.exception.RaftException;
 import top.datadriven.raft.core.model.model.RaftCoreModel;
-import top.datadriven.raft.core.service.component.RaftCoreComponent;
 import top.datadriven.raft.core.service.handler.StateMachineHandler;
 import top.datadriven.raft.core.service.transformer.ServerStateTransformerStarter;
 
@@ -21,10 +21,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Component
-public class RaftCoreComponentImpl implements RaftCoreComponent {
-
-    @Resource
-    private ConfigLoader configLoader;
+public class StartRaftComponentImpl implements StartRaftComponent {
 
     @Resource
     private ServerStateTransformerStarter serverStateTransformerStarter;
@@ -36,7 +33,7 @@ public class RaftCoreComponentImpl implements RaftCoreComponent {
     public void start() {
         try {
             //1. 加载配置
-            ConfigModel configModel = configLoader.load();
+            ConfigModel configModel = ConfigLoader.load();
 
             //2. 启动dubbo rpc服务；并设置远程节点的访问client TODO
 

@@ -1,4 +1,4 @@
-package top.datadriven.raft.core.service.component;
+package top.datadriven.raft.biz.service.impl.component;
 
 /**
  * @description: raft核心组件
@@ -7,7 +7,7 @@ package top.datadriven.raft.core.service.component;
  * @datetime: 2020/4/14 11:15 下午
  * @version: 1.0.0
  */
-public interface RaftCoreComponent {
+public interface StartRaftComponent {
     /**
      * 启动
      */

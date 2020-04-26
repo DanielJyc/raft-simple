@@ -38,9 +38,6 @@ import java.util.concurrent.locks.Lock;
 @Component
 public class VoteComponentImpl implements VoteComponent {
     @Resource
-    private ConfigLoader configLoader;
-
-    @Resource
     private RaftFacade raftFacade;
 
 
@@ -65,7 +62,7 @@ public class VoteComponentImpl implements VoteComponent {
         }
 
         //2.线程池发起请求
-        CountDownLatch countDownLatch = new CountDownLatch(CommonUtil.getMostCount(configLoader.getServerCount()));
+        CountDownLatch countDownLatch = new CountDownLatch(CommonUtil.getMostCount(ConfigLoader.getServerCount()));
         ListenableFuture<Boolean> listenableFuture = RaftThreadPool
                 .execute(() -> requestVote(voteRequest));
 

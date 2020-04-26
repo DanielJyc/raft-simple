@@ -18,6 +18,14 @@ public class LogEntryModel extends BaseToString {
 
     private Long index;
     private Long term;
+
+    /**
+     * 操作类型
+     */
     private String option;
+
+    /**
+     * 操作数据
+     */
     private String data;
 }

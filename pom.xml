@@ -7,6 +7,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>5.2.5.RELEASE</spring.version>
+        <spring.amqp.version>1.2.0.RELEASE</spring.amqp.version>
+        <spring.version>4.2.5.RELEASE</spring.version>
+        <spring-core.version>4.2.5.RELEASE</spring-core.version>
         <slf4j.version>1.7.21</slf4j.version>
         <log4j-over-slf4j.version>1.7.21</log4j-over-slf4j.version>
         <logback.version>1.1.8</logback.version>
@@ -22,6 +25,7 @@
         <mvel.version>2.4.0.Final</mvel.version>
         <servlet.version>3.0.1</servlet.version>
         <javassist.version>3.21.0-GA</javassist.version>
+        <dubbo.version>2.5.2</dubbo.version>
         <zkclient.version>0.1</zkclient.version>
         <netty.version>3.9.9.Final</netty.version>
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
@@ -117,21 +121,11 @@
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
 
-            <!-- spring -->
+            <!-- spring start-->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
@@ -141,12 +135,17 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
-                <artifactId>spring-tx</artifactId>
+                <artifactId>spring-jdbc</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
@@ -161,14 +160,57 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
+                <artifactId>spring-aspects</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
+                <artifactId>spring-core</artifactId>
                 <version>${spring.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jms</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-expression</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-instrument</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-oxm</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.amqp</groupId>
+                <artifactId>spring-rabbit</artifactId>
+                <version>${spring.amqp.version}</version>
+            </dependency>
+            <!-- spring end-->
+
             <!--aspectj-->
             <dependency>
                 <groupId>org.aspectj</groupId>
@@ -251,68 +293,44 @@
                 <artifactId>netty</artifactId>
                 <version>3.9.9.Final</version>
             </dependency>
+
+            <!--dubbo-->
             <dependency>
                 <groupId>com.github.sgroschupf</groupId>
                 <artifactId>zkclient</artifactId>
                 <version>${zkclient.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>org.slf4j</artifactId>
-                        <groupId>slf4j-log4j12</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
-            <dependency>
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>${javassist.version}</version>
-            </dependency>
-
-            <!--dubbo-->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>dubbo</artifactId>
-                <version>2.5.3</version>
+                <version>${dubbo.version}</version>
                 <exclusions>
                     <exclusion>
-                        <artifactId>org.javassist</artifactId>
-                        <groupId>javassist</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>spring</artifactId>
-                        <groupId>org.springframework</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>org.slf4j</artifactId>
-                        <groupId>slf4j-log4j12</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.jboss.netty</groupId>
-                        <artifactId>netty</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
+
+            <!--hutool-->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>5.2.0</version>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>1.25</version>
+            </dependency>
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>3.25.0-GA</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>
