@@ -1,7 +1,10 @@
 package top.datadriven.raft.core.model.util;
 
 import cn.hutool.core.util.RandomUtil;
+import com.google.common.collect.Lists;
 import top.datadriven.raft.core.model.constant.CommonConstant;
+
+import java.util.List;
 
 /**
  * @description: 通用工具类
@@ -24,4 +27,20 @@ public class CommonUtil {
     public static int getMostCount(int allServerCount) {
         return allServerCount / 2 + 1;
     }
+
+    /**
+     * 根据separatorChars进行分割str
+     *
+     * @param str            要分割的字符串
+     * @param separatorChars 分割字符
+     * @return 分割结果
+     */
+    public static List<String> split(String str, String separatorChars) {
+        int index = str.indexOf(separatorChars);
+        return Lists.newArrayList(
+                str.substring(0, index),
+                str.substring(index + 1)
+        );
+    }
+
 }

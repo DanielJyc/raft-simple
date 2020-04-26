@@ -29,4 +29,9 @@ public class CommonConstant {
      */
     public static final int HEARTBEAT_INTERVAL = 1000;
 
+    /**
+     * 数据分割标识
+     */
+    public static final String DATA_SPLIT_FLAG = " ";
+
 }
