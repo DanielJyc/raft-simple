@@ -21,6 +21,10 @@
             <groupId>top.datadriven.raft</groupId>
             <artifactId>raft-facade</artifactId>
         </dependency>
+        <dependency>
+            <groupId>top.datadriven.raft</groupId>
+            <artifactId>raft-config-loader</artifactId>
+        </dependency>
 
 
         <!--外部依赖-->

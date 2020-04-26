@@ -8,7 +8,7 @@ import top.datadriven.raft.core.model.config.ConfigModel;
 import java.io.BufferedReader;
 
 /**
- * @description:
+ * @description: 配置加载器
  * @author: jiayancheng
  * @email: jiayancheng@foxmail.com
  * @datetime: 2020/4/26 12:15 上午
