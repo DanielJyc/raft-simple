@@ -34,14 +34,11 @@ import java.util.concurrent.locks.Lock;
 public class AppendEntriesComponentImpl implements AppendEntriesComponent {
 
     @Resource
-    private ConfigLoader configLoader;
-
-    @Resource
     private RaftClient raftClient;
 
     @Override
     public void broadcastAppendEntries() {
-        ConfigModel configModel = configLoader.load();
+        ConfigModel configModel = ConfigLoader.load();
         Long leaderId = configModel.getLocalNode().getServerId();
 
         Lock lock = RaftCoreModel.getLock();
@@ -95,7 +92,7 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
     @Override
     public void requestAppendEntries(Long serverId, AppendEntriesRequest request) {
         //1.发起RPC请求
-        AppendEntriesResponse response = raftClient.appendEntries(request);
+        AppendEntriesResponse response = raftClient.appendEntries(serverId, request);
 
         Lock lock = RaftCoreModel.getLock();
         lock.lock();
@@ -158,7 +155,7 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
                 }
             }
             //2.2 判断是否一半以上成立, 并且log[N].term == currentTerm成立
-            if (matchServerCount >= CommonUtil.getMostCount(configLoader.getServerCount())
+            if (matchServerCount >= CommonUtil.getMostCount(ConfigLoader.getServerCount())
                     && logEntries.get((int) indexN).getTerm().equals(currentTerm)) {
                 indexMaxN = indexN;
             }

@@ -23,16 +23,16 @@ public class RaftClientImpl implements RaftClient {
     private DubboServiceConsumer dubboServiceConsumer;
 
     @Override
-    public VoteResponse requestVote(VoteRequest voteRequest,
-                                    Long remoteServerId) {
+    public VoteResponse requestVote(Long remoteServerId,
+                                    VoteRequest voteRequest) {
         return dubboServiceConsumer
                 .getFacade(remoteServerId)
                 .requestVote(voteRequest);
     }
 
     @Override
-    public AppendEntriesResponse appendEntries(AppendEntriesRequest appendEntriesRequest,
-                                               Long remoteServerId) {
+    public AppendEntriesResponse appendEntries(Long remoteServerId,
+                                               AppendEntriesRequest appendEntriesRequest) {
         return dubboServiceConsumer
                 .getFacade(remoteServerId)
                 .appendEntries(appendEntriesRequest);
