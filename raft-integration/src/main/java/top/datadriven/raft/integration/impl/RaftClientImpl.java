@@ -1,5 +1,6 @@
 package top.datadriven.raft.integration.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import top.datadriven.raft.facade.model.AppendEntriesRequest;
 import top.datadriven.raft.facade.model.AppendEntriesResponse;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
  * @datetime: 2020/4/26 8:18 下午
  * @version: 1.0.0
  */
+@Slf4j
 @Service
 public class RaftClientImpl implements RaftClient {
     @Resource
@@ -25,17 +27,26 @@ public class RaftClientImpl implements RaftClient {
     @Override
     public VoteResponse requestVote(Long remoteServerId,
                                     VoteRequest voteRequest) {
-        //TODO 调用失败，不影响主流程，因此捕获异常
-        return dubboServiceConsumer
-                .getFacade(remoteServerId)
-                .requestVote(voteRequest);
+        try {
+            return dubboServiceConsumer
+                    .getFacade(remoteServerId)
+                    .requestVote(voteRequest);
+        } catch (Throwable t) {
+            log.error("投票失败", t);
+            return new VoteResponse(0L, Boolean.FALSE);
+        }
     }
 
     @Override
     public AppendEntriesResponse appendEntries(Long remoteServerId,
                                                AppendEntriesRequest appendEntriesRequest) {
-        return dubboServiceConsumer
-                .getFacade(remoteServerId)
-                .appendEntries(appendEntriesRequest);
+        try {
+            return dubboServiceConsumer
+                    .getFacade(remoteServerId)
+                    .appendEntries(appendEntriesRequest);
+        } catch (Throwable t) {
+            log.error("附加日志失败", t);
+            return new AppendEntriesResponse(0L, Boolean.FALSE);
+        }
     }
 }
