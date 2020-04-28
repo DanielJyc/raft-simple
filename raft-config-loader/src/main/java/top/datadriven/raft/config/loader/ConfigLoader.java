@@ -16,14 +16,14 @@ import java.io.BufferedReader;
  */
 @Service
 public class ConfigLoader {
-    private static final ConfigModel configModel;
+    private static final ConfigModel CONFIG_MODEL;
 
     static {
         BufferedReader bufferedReader = FileUtil.getReader(
-                "server-rpc-config.yml",
+                "/Users/daniel/gitworkspace/simple-raft/raft-config-loader/src/main/resources/server-rpc-config.yml",
                 "UTF-8");
         Yaml yaml = new Yaml();
-        configModel = yaml.loadAs(bufferedReader, ConfigModel.class);
+        CONFIG_MODEL = yaml.loadAs(bufferedReader, ConfigModel.class);
     }
 
     /**
@@ -32,7 +32,7 @@ public class ConfigLoader {
      * @return 配置
      */
     public static ConfigModel load() {
-        return configModel;
+        return CONFIG_MODEL;
     }
 
     /**
@@ -42,6 +42,6 @@ public class ConfigLoader {
      * @return 数量
      */
     public static Integer getServerCount() {
-        return configModel.getRemoteNodes().size() + 1;
+        return CONFIG_MODEL.getRemoteNodes().size() + 1;
     }
 }

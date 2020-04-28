@@ -35,21 +35,6 @@ public interface ServerStateTransformer {
     List<ServerStateEnum> getNextStates();
 
     /**
-     * 依次获取下一个状态，如果满足前置校验，则进入下一个状态
-     */
-    default void executeNext() {
-        for (ServerStateEnum nextState : getNextStates()) {
-            ServerStateTransformer nextTransformer = ServerStateFactory.getByType(nextState);
-            //如果满足前置校验，则进入下一个状态
-            if (nextTransformer.preCheck()) {
-                nextTransformer.execute();
-                //只执行第一个匹配到的，理论上会在下一个状态实现中进行后续的跳转，后续state不会再执行；此处break只做标识使用
-                break;
-            }
-        }
-    }
-
-    /**
      * 前置校验：校验通过才能进入当前状态。
      * 当前默认逻辑即可满足要求，后续如果需要特殊逻辑，子类覆盖即可。
      *

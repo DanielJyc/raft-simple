@@ -20,9 +20,7 @@
     </bean>
 
 
-    <import resource="classpath*:spring/spring-mybatis.xml"/>
     <import resource="classpath*:spring/spring-mvc.xml"/>
     <import resource="classpath*:spring/spring-beans.xml"/>
-    <import resource="classpath*:spring/spring-aop.xml"/>
 
 </beans>

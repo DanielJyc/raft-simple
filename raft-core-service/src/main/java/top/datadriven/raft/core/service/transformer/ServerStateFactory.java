@@ -1,23 +1,20 @@
 package top.datadriven.raft.core.service.transformer;
 
-import lombok.Setter;
 import top.datadriven.raft.core.model.enums.ServerStateEnum;
 
-import java.util.Map;
-
 /**
- * @description: server state 工厂
+ * @description: 状态执行器工厂
  * @author: jiayancheng
  * @email: jiayancheng@foxmail.com
- * @datetime: 2020/4/18 10:05 下午
+ * @datetime: 2020/4/28 8:47 下午
  * @version: 1.0.0
  */
-public class ServerStateFactory {
-    @Setter
-    private static Map<ServerStateEnum, ServerStateTransformer> stateMap;
-
-
-    public static ServerStateTransformer getByType(ServerStateEnum currentState) {
-        return stateMap.get(currentState);
-    }
+public interface ServerStateFactory {
+    /**
+     * 根据状态获取执行器
+     *
+     * @param currentState 状态
+     * @return 执行器
+     */
+    ServerStateTransformer getByType(ServerStateEnum currentState);
 }

@@ -11,7 +11,7 @@
     <context:component-scan base-package="top.datadriven.raft.core.service"/>
 
     <bean id="derverStateFactory"
-          class="top.datadriven.raft.core.service.transformer.ServerStateFactory">
+          class="top.datadriven.raft.core.service.transformer.impl.ServerStateFactoryImpl">
         <property name="stateMap">
             <map>
                 <entry key="LEADER" value-ref="leaderStateImpl"/>

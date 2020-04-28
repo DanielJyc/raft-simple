@@ -7,7 +7,6 @@ import top.datadriven.raft.core.model.enums.ServerStateEnum;
 import top.datadriven.raft.core.model.model.PersistentStateModel;
 import top.datadriven.raft.core.model.model.RaftCoreModel;
 import top.datadriven.raft.core.service.component.VoteComponent;
-import top.datadriven.raft.core.service.transformer.ServerStateTransformer;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.concurrent.locks.Lock;
  * @version: 1.0.0
  */
 @Service(value = "candidateStateImpl")
-public class CandidateStateImpl implements ServerStateTransformer {
+public class CandidateStateImpl extends AbstractServerStateTransformer {
 
     @Resource
     private VoteComponent voteComponent;

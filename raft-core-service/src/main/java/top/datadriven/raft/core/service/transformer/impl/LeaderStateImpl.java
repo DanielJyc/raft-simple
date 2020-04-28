@@ -7,7 +7,6 @@ import top.datadriven.raft.core.model.enums.ServerStateEnum;
 import top.datadriven.raft.core.model.exception.ErrorCodeEnum;
 import top.datadriven.raft.core.model.exception.RaftException;
 import top.datadriven.raft.core.service.component.AppendEntriesComponent;
-import top.datadriven.raft.core.service.transformer.ServerStateTransformer;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
  * @version: 1.0.0
  */
 @Service(value = "leaderStateImpl")
-public class LeaderStateImpl implements ServerStateTransformer {
+public class LeaderStateImpl extends AbstractServerStateTransformer {
 
     @Resource
     private AppendEntriesComponent appendEntriesComponent;

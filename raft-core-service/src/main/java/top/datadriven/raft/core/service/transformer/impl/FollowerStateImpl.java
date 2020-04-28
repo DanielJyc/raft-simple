@@ -8,7 +8,6 @@ import top.datadriven.raft.core.model.exception.ErrorCodeEnum;
 import top.datadriven.raft.core.model.exception.RaftException;
 import top.datadriven.raft.core.model.model.RaftCoreModel;
 import top.datadriven.raft.core.model.util.CommonUtil;
-import top.datadriven.raft.core.service.transformer.ServerStateTransformer;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @version: 1.0.0
  */
 @Service(value = "followerStateImpl")
-public class FollowerStateImpl implements ServerStateTransformer {
+public class FollowerStateImpl extends AbstractServerStateTransformer {
 
     @Override
     public void execute() {
