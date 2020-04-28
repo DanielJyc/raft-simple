@@ -46,7 +46,7 @@ public class DubboServiceConsumerImpl implements DubboServiceConsumer {
                 ReferenceConfig<RaftFacade> reference = new ReferenceConfig<>();
                 reference.setApplication(application);
                 reference.setInterface(RaftFacade.class);
-                reference.setUrl("dubbo://localhost:20881");
+                reference.setUrl("dubbo://" + remoteNode.getIp() + ":" + remoteNode.getPort());
 
 
                 //3.和本地bean一样使用xxxService
