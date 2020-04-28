@@ -21,8 +21,9 @@ public interface VoteComponent {
     /**
      * 发起投票
      *
-     * @param voteRequest 请求
+     * @param remoteServerId 远程服务的server id
+     * @param voteRequest    请求
      * @return 投票结果
      */
-    Boolean requestVote(VoteRequest voteRequest);
+    Boolean requestVote(Long remoteServerId, VoteRequest voteRequest);
 }

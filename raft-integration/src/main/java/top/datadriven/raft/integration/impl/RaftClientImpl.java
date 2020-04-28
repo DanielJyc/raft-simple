@@ -25,6 +25,7 @@ public class RaftClientImpl implements RaftClient {
     @Override
     public VoteResponse requestVote(Long remoteServerId,
                                     VoteRequest voteRequest) {
+        //TODO 调用失败，不影响主流程，因此捕获异常
         return dubboServiceConsumer
                 .getFacade(remoteServerId)
                 .requestVote(voteRequest);

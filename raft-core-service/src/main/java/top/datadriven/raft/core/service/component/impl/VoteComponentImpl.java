@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import org.springframework.stereotype.Component;
 import top.datadriven.raft.config.loader.ConfigLoader;
 import top.datadriven.raft.core.model.config.ConfigModel;
+import top.datadriven.raft.core.model.config.RaftNodeModel;
 import top.datadriven.raft.core.model.enums.ServerStateEnum;
 import top.datadriven.raft.core.model.exception.ErrorCodeEnum;
 import top.datadriven.raft.core.model.exception.RaftException;
@@ -18,10 +19,10 @@ import top.datadriven.raft.core.model.util.CommonUtil;
 import top.datadriven.raft.core.service.component.VoteComponent;
 import top.datadriven.raft.core.service.pool.RaftThreadPool;
 import top.datadriven.raft.core.service.transformer.convertor.FollowerConvertor;
-import top.datadriven.raft.facade.api.RaftFacade;
 import top.datadriven.raft.facade.model.LogEntryModel;
 import top.datadriven.raft.facade.model.VoteRequest;
 import top.datadriven.raft.facade.model.VoteResponse;
+import top.datadriven.raft.integration.RaftClient;
 
 import javax.annotation.Resource;
 import java.util.concurrent.CountDownLatch;
@@ -39,20 +40,20 @@ import java.util.concurrent.locks.Lock;
 @Component
 public class VoteComponentImpl implements VoteComponent {
     @Resource
-    private RaftFacade raftFacade;
+    private RaftClient raftClient;
 
 
     @Override
     public Boolean broadcastVote() {
         Lock lock = RaftCoreModel.getLock();
         VoteRequest voteRequest = new VoteRequest();
+        ConfigModel configModel = ConfigLoader.load();
         lock.lock();
         try {
             //0.数据准备
             RaftCoreModel coreModel = RaftCoreModel.getSingleton();
             PersistentStateModel persistentState = coreModel.getPersistentState();
             LogEntryModel lastLogEntry = persistentState.getLastEntry();
-            ConfigModel configModel = ConfigLoader.load();
 
             //1. 组装入参
             voteRequest.setTerm(persistentState.getCurrentTerm());
@@ -64,27 +65,41 @@ public class VoteComponentImpl implements VoteComponent {
         }
 
         //2.线程池发起请求
+        // return multiThreadMode(voteRequest, configModel);
+        return singleThreadMode(voteRequest, configModel);
+    }
+
+    /**
+     * 多线程模式执行
+     */
+    private Boolean multiThreadMode(VoteRequest voteRequest, ConfigModel configModel) {
+        //1.一半以上节点成功，通过countDownLatch来获取
         CountDownLatch countDownLatch = new CountDownLatch(CommonUtil.getMostCount(ConfigLoader.getServerCount()));
-        ListenableFuture<Boolean> listenableFuture = RaftThreadPool
-                .execute(() -> requestVote(voteRequest));
+        for (RaftNodeModel remoteNode : configModel.getRemoteNodes()) {
 
-        //3.增加回调方法。
-        //noinspection UnstableApiUsage
-        Futures.addCallback(listenableFuture, new FutureCallback<Boolean>() {
-            @Override
-            public void onSuccess(@NullableDecl Boolean result) {
-                //如果执行成功则减一
-                if (result != null && result) {
-                    countDownLatch.countDown();
+            //2. 请求一台服务
+            ListenableFuture<Boolean> listenableFuture = RaftThreadPool
+                    .execute(() -> requestVote(remoteNode.getServerId(), voteRequest)
+                    );
+
+            //3.增加回调方法。
+            //noinspection UnstableApiUsage
+            Futures.addCallback(listenableFuture, new FutureCallback<Boolean>() {
+                @Override
+                public void onSuccess(@NullableDecl Boolean result) {
+                    //如果执行成功则减一
+                    if (result != null && result) {
+                        countDownLatch.countDown();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(@SuppressWarnings("NullableProblems") Throwable throwable) {
-                log.warn("投票异常", throwable);
-            }
-            // MoreExecutors.directExecutor()返回guava默认的Executor
-        }, MoreExecutors.directExecutor());
+                @Override
+                public void onFailure(@SuppressWarnings("NullableProblems") Throwable throwable) {
+                    log.warn("投票异常", throwable);
+                }
+                // MoreExecutors.directExecutor()返回guava默认的Executor
+            }, MoreExecutors.directExecutor());
+        }
 
         //4.等待1s，获取执行结果。全部执行完成(一半以上server)，则为true
         try {
@@ -94,14 +109,31 @@ public class VoteComponentImpl implements VoteComponent {
         }
     }
 
+    /**
+     * 单线程模式执行：方便调试
+     */
+    private Boolean singleThreadMode(VoteRequest voteRequest, ConfigModel configModel) {
+        int successCount = 1;
+        for (RaftNodeModel remoteNode : configModel.getRemoteNodes()) {
+            Boolean response = requestVote(remoteNode.getServerId(), voteRequest);
+            if (response) {
+                successCount++;
+            }
+            if (successCount >= CommonUtil.getMostCount(ConfigLoader.getServerCount())) {
+                return Boolean.TRUE;
+            }
+        }
+        return Boolean.FALSE;
+    }
+
     @Override
-    public Boolean requestVote(VoteRequest voteRequest) {
+    public Boolean requestVote(Long remoteServerId, VoteRequest voteRequest) {
         RaftCoreModel coreModel = RaftCoreModel.getSingleton();
         PersistentStateModel persistentState = coreModel.getPersistentState();
         Long currentTerm = persistentState.getCurrentTerm();
 
         //1.发起请求
-        VoteResponse response = raftFacade.requestVote(voteRequest);
+        VoteResponse response = raftClient.requestVote(remoteServerId, voteRequest);
 
         //2.状态发生变化或者term发生变化，则不作处理。（发送请求的过程过了一段时间，所以需要重新判断一下）
         if (coreModel.getServerStateEnum() != ServerStateEnum.CANDIDATE
