@@ -1,5 +1,7 @@
 package top.datadriven.raft.core.service.component.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.google.common.collect.Lists;
 import org.springframework.stereotype.Component;
 import top.datadriven.raft.config.loader.ConfigLoader;
 import top.datadriven.raft.core.model.config.ConfigModel;
@@ -75,9 +77,7 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
                 request.setPreLogTerm(persistentState.getPreEntry().getTerm());
                 request.setLeaderCommit(commitIndex);
                 //复制leader已经commit的log entry
-                int startIndex = nextIndex.get(remoteNode.getServerId());
-                int endIndex = (int) (commitIndex + 1);
-                request.setLogEntries(logEntries.subList(startIndex, endIndex));
+                request.setLogEntries(getNextEntries(logEntries, commitIndex, nextIndex, remoteNode));
 
                 //2.2 线程池 异步发起单个请求
                 RaftThreadPool.execute(() -> requestAppendEntries(remoteNode.getServerId(), request));
@@ -86,6 +86,27 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
         } finally {
             lock.unlock();
         }
+    }
+
+    /**
+     * 获取下一批 日志条目
+     */
+    private List<LogEntryModel> getNextEntries(List<LogEntryModel> logEntries,
+                                               Long commitIndex,
+                                               Map<Long, Integer> nextIndex,
+                                               RaftNodeModel remoteNode) {
+        //1.没添加日志时为空，因此发心跳空包
+        if (CollectionUtil.isEmpty(nextIndex)) {
+            return Lists.newArrayList();
+        }
+        //2.获取开始和结束索引
+        int startIndex = nextIndex.get(remoteNode.getServerId());
+        int endIndex = (int) (commitIndex + 1);
+        //3.索引不符合预期时，发心跳空包
+        if (startIndex > endIndex || endIndex > logEntries.size()) {
+            return Lists.newArrayList();
+        }
+        return logEntries.subList(startIndex, endIndex);
     }
 
 
