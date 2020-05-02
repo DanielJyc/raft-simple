@@ -40,11 +40,6 @@ public class PersistentStateModel extends BaseToString {
      * 获取最后一条写入的entry
      */
     public LogEntryModel getLastEntry() {
-        //只有1条记录(初始记录)时，直接返回该记录
-        if (logEntries.size() == 1
-                && logEntries.get(0).getIndex().equals(CommonConstant.INIT_INDEX)) {
-            return logEntries.get(0);
-        }
         return logEntries.get(logEntries.size() - 1);
     }
 
@@ -53,6 +48,11 @@ public class PersistentStateModel extends BaseToString {
      * 获取倒数第二条写入的entry
      */
     public LogEntryModel getPreEntry() {
+        //只有1条记录(初始记录)时，直接返回该记录
+        if (logEntries.size() == 1
+                && logEntries.get(0).getIndex().equals(CommonConstant.INIT_INDEX)) {
+            return logEntries.get(0);
+        }
         return logEntries.get(logEntries.size() - 2);
     }
 
