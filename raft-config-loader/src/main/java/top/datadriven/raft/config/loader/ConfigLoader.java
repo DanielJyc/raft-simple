@@ -20,7 +20,7 @@ public class ConfigLoader {
 
     static {
         BufferedReader bufferedReader = FileUtil.getReader(
-                "/Users/daniel/gitworkspace/simple-raft/raft-config-loader/src/main/resources/server-rpc-config.yml",
+                "server-rpc-config.yml",
                 "UTF-8");
         Yaml yaml = new Yaml();
         CONFIG_MODEL = yaml.loadAs(bufferedReader, ConfigModel.class);

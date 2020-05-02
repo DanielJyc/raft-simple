@@ -46,6 +46,8 @@ public class RaftCoreModel extends BaseToString {
 
         // volatile state (server)
         serverState = new ServerStateModel();
+        serverState.setCommitIndex(0L);
+        serverState.setLastApplied(0L);
 
         //volatile state (leader)
         leaderState = new LeaderStateModel();

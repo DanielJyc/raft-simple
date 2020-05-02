@@ -3,7 +3,7 @@ package top.datadriven.raft.web;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * @description:
+ * @description: 启动执行
  * @author: jiayancheng
  * @email: jiayancheng@foxmail.com
  * @datetime: 2020/4/28 10:05 下午
@@ -16,6 +16,6 @@ public class AppMain {
         );
         context.start();
 
-        System.out.println("starting...");
+        System.out.println("开始启动 ...");
     }
 }
