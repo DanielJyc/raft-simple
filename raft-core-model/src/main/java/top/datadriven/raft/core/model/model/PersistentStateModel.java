@@ -2,6 +2,7 @@ package top.datadriven.raft.core.model.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import top.datadriven.raft.core.model.constant.CommonConstant;
 import top.datadriven.raft.core.model.exception.ErrorCodeEnum;
 import top.datadriven.raft.core.model.exception.RaftException;
 import top.datadriven.raft.facade.base.BaseToString;
@@ -39,6 +40,11 @@ public class PersistentStateModel extends BaseToString {
      * 获取最后一条写入的entry
      */
     public LogEntryModel getLastEntry() {
+        //只有1条记录(初始记录)时，直接返回该记录
+        if (logEntries.size() == 1
+                && logEntries.get(0).getIndex().equals(CommonConstant.INIT_INDEX)) {
+            return logEntries.get(0);
+        }
         return logEntries.get(logEntries.size() - 1);
     }
 
