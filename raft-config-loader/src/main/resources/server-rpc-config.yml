@@ -1,6 +1,7 @@
 !!top.datadriven.raft.core.model.config.ConfigModel
 localNode: {ip: localhost, port: 20881, serverId: 1}
-remoteNodes:
+allNodes:
+  - {ip: localhost, port: 20881, serverId: 1}
   - {ip: localhost, port: 20882, serverId: 2}
   - {ip: localhost, port: 20883, serverId: 3}
 #  - {ip: localhost, port: 20884, serverId: 4}

@@ -44,4 +44,9 @@ public interface ServerStateTransformer {
         return RaftCoreModel.getSingleton().getServerStateEnum() == getCurrentState();
     }
 
+    /**
+     * 进入当前状态前，需要做的事情
+     */
+    void preDo();
+
 }

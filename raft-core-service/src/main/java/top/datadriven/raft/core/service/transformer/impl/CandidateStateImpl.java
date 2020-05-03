@@ -55,6 +55,11 @@ public class CandidateStateImpl extends AbstractServerStateTransformer {
     }
 
     @Override
+    public void preDo() {
+        // do nothing
+    }
+
+    @Override
     public List<ServerStateEnum> getNextStates() {
         return Lists.newArrayList(
                 ServerStateEnum.CANDIDATE,

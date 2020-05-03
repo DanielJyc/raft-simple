@@ -42,6 +42,6 @@ public class ConfigLoader {
      * @return 数量
      */
     public static Integer getServerCount() {
-        return CONFIG_MODEL.getRemoteNodes().size() + 1;
+        return CONFIG_MODEL.getAllNodes().size();
     }
 }

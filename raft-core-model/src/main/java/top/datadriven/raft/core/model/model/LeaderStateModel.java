@@ -22,12 +22,12 @@ public class LeaderStateModel extends BaseToString {
      * 需要给follower复制的下一条目的索引值（针对每一个follower）
      * 初始值为leader的最大index+1
      */
-    private Map<Long, Integer> nextIndex;
+    private Map<Long, Long> nextIndex;
 
     /**
      * 已经赋值给follower的最高索引（针对每一个follower）
      * 作用：当一半以上follower存在时，leader用来commit数据
      */
-    private Map<Long, Integer> matchIndex;
+    private Map<Long, Long> matchIndex;
 
 }

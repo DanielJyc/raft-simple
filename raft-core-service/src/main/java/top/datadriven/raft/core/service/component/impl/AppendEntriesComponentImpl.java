@@ -54,8 +54,8 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
             ServerStateModel serverState = coreModel.getServerState();
             Long commitIndex = serverState.getCommitIndex();
             Long lastApplied = serverState.getLastApplied();
-            Map<Long, Integer> matchIndex = coreModel.getLeaderState().getMatchIndex();
-            Map<Long, Integer> nextIndex = coreModel.getLeaderState().getNextIndex();
+            Map<Long, Long> matchIndex = coreModel.getLeaderState().getMatchIndex();
+            Map<Long, Long> nextIndex = coreModel.getLeaderState().getNextIndex();
 
             //1.找到N
             Long indexMaxN = getMaxN(persistentState, commitIndex,
@@ -93,14 +93,14 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
      */
     private List<LogEntryModel> getNextEntries(List<LogEntryModel> logEntries,
                                                Long commitIndex,
-                                               Map<Long, Integer> nextIndex,
+                                               Map<Long, Long> nextIndex,
                                                RaftNodeModel remoteNode) {
         //1.没添加日志时为空，因此发心跳空包
         if (CollectionUtil.isEmpty(nextIndex)) {
             return Lists.newArrayList();
         }
         //2.获取开始和结束索引
-        int startIndex = nextIndex.get(remoteNode.getServerId());
+        int startIndex = Math.toIntExact(nextIndex.get(remoteNode.getServerId()));
         int endIndex = (int) (commitIndex + 1);
         //3.索引不符合预期时，发心跳空包
         if (startIndex > endIndex || endIndex > logEntries.size()) {
@@ -122,8 +122,8 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
             RaftCoreModel coreModel = RaftCoreModel.getSingleton();
             PersistentStateModel persistentState = coreModel.getPersistentState();
             Long currentTerm = persistentState.getCurrentTerm();
-            Map<Long, Integer> matchIndex = coreModel.getLeaderState().getMatchIndex();
-            Map<Long, Integer> nextIndex = coreModel.getLeaderState().getNextIndex();
+            Map<Long, Long> matchIndex = coreModel.getLeaderState().getMatchIndex();
+            Map<Long, Long> nextIndex = coreModel.getLeaderState().getNextIndex();
 
             //2. 当前节点被废黜，或任期号变更了,不对回复值做处理
             if (coreModel.getServerStateEnum() != ServerStateEnum.LEADER
@@ -158,7 +158,7 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
      * 前者是一半节点匹配后才能提交；后者[log.get(i - baseIndex).getLogTerm() == currentTerm]是防止非本此term的日志覆盖(5.4.2) 比如，在图8(c)中，S1在term=4时为leader，此时，虽然已经复制了index=2的一半以上节点，但是该term=2，非当前term，不能用来提交。
      */
     private Long getMaxN(PersistentStateModel persistentState, Long commitIndex,
-                         Long lastApplied, Map<Long, Integer> matchIndex,
+                         Long lastApplied, Map<Long, Long> matchIndex,
                          ConfigModel configModel) {
         //1.数据准备
         Long indexMaxN = commitIndex;
