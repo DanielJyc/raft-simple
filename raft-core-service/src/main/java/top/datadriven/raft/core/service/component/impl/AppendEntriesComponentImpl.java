@@ -121,6 +121,7 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
             //0.数据准备
             RaftCoreModel coreModel = RaftCoreModel.getSingleton();
             PersistentStateModel persistentState = coreModel.getPersistentState();
+            LogEntryModel lastEntry = persistentState.getLastEntry();
             Long currentTerm = persistentState.getCurrentTerm();
             Map<Long, Long> matchIndex = coreModel.getLeaderState().getMatchIndex();
             Map<Long, Long> nextIndex = coreModel.getLeaderState().getNextIndex();
@@ -137,12 +138,13 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
             }
 
             //4. 判断结果，为true: nextIndex和matchIndex加一
-            if (response.getSuccess()) {
+
+            if (response.getSuccess() && nextIndex.get(serverId) < lastEntry.getIndex() + 1) {
                 nextIndex.put(serverId, nextIndex.get(serverId) + 1);
                 matchIndex.put(serverId, matchIndex.get(serverId) + 1);
             }
             // 为false: nextIndex减一
-            else {
+            if (response.getSuccess() && nextIndex.get(serverId) > 1) {
                 nextIndex.put(serverId, nextIndex.get(serverId) - 1);
             }
         } finally {
