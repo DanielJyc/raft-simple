@@ -47,6 +47,8 @@ public class VoteServiceImpl implements VoteService {
             // 至少和自己一样新，那么就投票给他（5.2 节，5.4 节）
             if (upToDate(voteRequest, persistentState)
                     && notVoteOther(voteRequest, persistentState)) {
+                //设置leaderId
+                coreModel.setLeaderId(voteRequest.getCandidateId());
                 return new VoteResponse(currentTerm, Boolean.TRUE);
             } else {
                 return new VoteResponse(currentTerm, Boolean.FALSE);

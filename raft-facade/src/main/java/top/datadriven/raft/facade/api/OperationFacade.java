@@ -1,5 +1,7 @@
 package top.datadriven.raft.facade.api;
 
+import top.datadriven.raft.facade.model.SubmitResponse;
+
 /**
  * @description: 客户端的操作接口
  * @author: jiayancheng
@@ -15,5 +17,5 @@ public interface OperationFacade {
      * @param data   数据
      * @return 提交结果
      */
-    Boolean submitData(String option, String data);
+    SubmitResponse submitData(String option, String data);
 }

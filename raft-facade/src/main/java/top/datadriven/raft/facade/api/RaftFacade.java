@@ -16,7 +16,7 @@ import top.datadriven.raft.facade.model.VoteResponse;
 public interface RaftFacade {
 
     /**
-     * 发起请求：投票
+     * 接受请求：投票
      *
      * @param voteRequest 请求参数
      * @return 结果
@@ -24,7 +24,7 @@ public interface RaftFacade {
     VoteResponse requestVote(VoteRequest voteRequest);
 
     /**
-     * 发起请求：附加日志
+     * 接受请求：附加日志
      *
      * @param appendEntriesRequest 请求
      * @return 结果

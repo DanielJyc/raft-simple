@@ -80,6 +80,12 @@ public class RaftCoreModel extends BaseToString {
      */
     private Long voteCount;
 
+    /**
+     * 当前的leaderId：针对非Leader节点
+     */
+    private Long leaderId;
+
+
     /*==============================异步通知channel=============================*/
     /**
      * 心跳超时控制：用来判断Follower态是否心跳超时
