@@ -3,6 +3,7 @@ package top.datadriven.raft.facade.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import top.datadriven.raft.facade.base.BaseToString;
 
 /**
  * @description: 提交数据的相应
@@ -14,7 +15,9 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class SubmitResponse {
+public class SubmitResponse extends BaseToString {
+    private static final long serialVersionUID = -1500206787222543731L;
+
     /**
      * 提交是否成功
      */
