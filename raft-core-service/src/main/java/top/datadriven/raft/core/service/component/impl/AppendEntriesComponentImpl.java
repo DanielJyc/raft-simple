@@ -101,7 +101,7 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
         int nextIndex = Math.toIntExact(leaderState.getNextIndex().get(remoteNode.getServerId()));
         int lastLogIndex = Math.toIntExact(persistentState.getLastEntry().getIndex());
         //3.索引不符合预期(已经大于等于最大日志)时，发心跳空包
-        if (nextIndex >= lastLogIndex) {
+        if (nextIndex > lastLogIndex) {
             return Lists.newArrayList();
         }
         return logEntries.subList(nextIndex, lastLogIndex + 1);
