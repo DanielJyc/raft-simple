@@ -1,6 +1,7 @@
 package top.datadriven.raft.core.service.transformer.impl;
 
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import top.datadriven.raft.config.loader.ConfigLoader;
 import top.datadriven.raft.core.model.enums.ServerStateEnum;
@@ -19,6 +20,7 @@ import java.util.concurrent.locks.Lock;
  * @datetime: 2020/4/15 11:36 下午
  * @version: 1.0.0
  */
+@Slf4j
 @Service(value = "candidateStateImpl")
 public class CandidateStateImpl extends AbstractServerStateTransformer {
 
@@ -27,6 +29,7 @@ public class CandidateStateImpl extends AbstractServerStateTransformer {
 
     @Override
     public void execute() {
+        log.info("当前为 Candidate：" + RaftCoreModel.getSingleton());
         Lock lock = RaftCoreModel.getLock();
         lock.lock();
         try {

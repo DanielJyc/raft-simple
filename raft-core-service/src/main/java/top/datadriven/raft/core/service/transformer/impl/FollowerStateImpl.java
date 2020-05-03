@@ -1,6 +1,7 @@
 package top.datadriven.raft.core.service.transformer.impl;
 
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import top.datadriven.raft.core.model.enums.ServerStateEnum;
@@ -19,12 +20,14 @@ import java.util.concurrent.TimeUnit;
  * @datetime: 2020/4/15 11:36 下午
  * @version: 1.0.0
  */
+@Slf4j
 @Service(value = "followerStateImpl")
 public class FollowerStateImpl extends AbstractServerStateTransformer {
 
     @Override
     public void execute() {
         while (!Thread.currentThread().isInterrupted()) {
+            log.info("当前为Follower：" + RaftCoreModel.getSingleton());
             String channelFlag;
             try {
                 //1.每过6~10个心跳时间获取一次心跳标志

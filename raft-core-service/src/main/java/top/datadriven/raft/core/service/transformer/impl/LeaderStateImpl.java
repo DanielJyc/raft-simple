@@ -1,6 +1,7 @@
 package top.datadriven.raft.core.service.transformer.impl;
 
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import top.datadriven.raft.config.loader.ConfigLoader;
 import top.datadriven.raft.core.model.config.ConfigModel;
@@ -24,6 +25,7 @@ import java.util.concurrent.locks.Lock;
  * @datetime: 2020/4/15 11:35 下午
  * @version: 1.0.0
  */
+@Slf4j
 @Service(value = "leaderStateImpl")
 public class LeaderStateImpl extends AbstractServerStateTransformer {
 
@@ -38,11 +40,14 @@ public class LeaderStateImpl extends AbstractServerStateTransformer {
     @Override
     public void execute() {
         while (!Thread.currentThread().isInterrupted()) {
+            log.info("当前为 Leader：" + RaftCoreModel.getSingleton());
+
             //1.广播appendEntries或者心跳(entry为空)
             appendEntriesComponent.broadcastAppendEntries();
 
             //2.休眠 heartbeat
             try {
+                //noinspection BusyWait
                 Thread.sleep(CommonConstant.HEARTBEAT_INTERVAL);
             } catch (InterruptedException e) {
                 throw new RaftException(ErrorCodeEnum.SYSTEM_ERROR, "sleep异常");
