@@ -34,15 +34,14 @@ public class KvStateMachineImpl implements StateMachine {
         List<String> kvData = CommonUtil.split(logEntryModel.getData(), CommonConstant.DATA_SPLIT_FLAG);
         switch (optionEnum) {
             case GET:
-                log.info("GET option :");
-                log.info(kvMap.get(kvData.get(0)));
+                log.info("GET option :" + kvData);
                 break;
             case ADD:
-                log.info("ADD option :");
+                log.info("ADD option :" + kvData);
                 kvMap.put(kvData.get(0), kvData.get(1));
                 break;
             case DEL:
-                log.info("DEL option :");
+                log.info("DEL option :" + kvData);
                 kvMap.remove(kvData.get(0));
                 break;
             default:
