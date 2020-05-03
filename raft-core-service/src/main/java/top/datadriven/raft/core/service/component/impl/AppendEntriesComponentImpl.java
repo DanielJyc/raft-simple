@@ -103,7 +103,7 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
         int startIndex = Math.toIntExact(nextIndex.get(remoteNode.getServerId()));
         int endIndex = (int) (commitIndex + 1);
         //3.索引不符合预期时，发心跳空包
-        if (startIndex > endIndex || endIndex > logEntries.size()) {
+        if (startIndex >= endIndex || endIndex > logEntries.size()) {
             return Lists.newArrayList();
         }
         return logEntries.subList(startIndex, endIndex);
