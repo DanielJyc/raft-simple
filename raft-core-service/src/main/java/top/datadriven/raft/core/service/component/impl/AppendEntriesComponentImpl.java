@@ -1,6 +1,5 @@
 package top.datadriven.raft.core.service.component.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Component;
 import top.datadriven.raft.config.loader.ConfigLoader;
@@ -8,6 +7,7 @@ import top.datadriven.raft.core.model.config.ConfigModel;
 import top.datadriven.raft.core.model.config.RaftNodeModel;
 import top.datadriven.raft.core.model.constant.CommonConstant;
 import top.datadriven.raft.core.model.enums.ServerStateEnum;
+import top.datadriven.raft.core.model.model.LeaderStateModel;
 import top.datadriven.raft.core.model.model.PersistentStateModel;
 import top.datadriven.raft.core.model.model.RaftCoreModel;
 import top.datadriven.raft.core.model.model.ServerStateModel;
@@ -50,12 +50,10 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
             RaftCoreModel coreModel = RaftCoreModel.getSingleton();
             PersistentStateModel persistentState = coreModel.getPersistentState();
             Long currentTerm = persistentState.getCurrentTerm();
-            List<LogEntryModel> logEntries = persistentState.getLogEntries();
             ServerStateModel serverState = coreModel.getServerState();
             Long commitIndex = serverState.getCommitIndex();
             Long lastApplied = serverState.getLastApplied();
             Map<Long, Long> matchIndex = coreModel.getLeaderState().getMatchIndex();
-            Map<Long, Long> nextIndex = coreModel.getLeaderState().getNextIndex();
 
             //1.找到N
             Long indexMaxN = getMaxN(persistentState, commitIndex,
@@ -77,7 +75,7 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
                 request.setPreLogTerm(persistentState.getPreEntry().getTerm());
                 request.setLeaderCommit(commitIndex);
                 //复制leader已经commit的log entry
-                request.setLogEntries(getNextEntries(logEntries, commitIndex, nextIndex, remoteNode));
+                request.setLogEntries(getNextEntries(commitIndex, remoteNode));
 
                 //2.2 线程池 异步发起单个请求
                 RaftThreadPool.execute(() -> requestAppendEntries(remoteNode.getServerId(), request));
@@ -91,16 +89,16 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
     /**
      * 获取下一批 日志条目
      */
-    private List<LogEntryModel> getNextEntries(List<LogEntryModel> logEntries,
-                                               Long commitIndex,
-                                               Map<Long, Long> nextIndex,
+    private List<LogEntryModel> getNextEntries(Long commitIndex,
                                                RaftNodeModel remoteNode) {
-        //1.没添加日志时为空，因此发心跳空包
-        if (CollectionUtil.isEmpty(nextIndex)) {
-            return Lists.newArrayList();
-        }
+        //1.数据准备
+        RaftCoreModel coreModel = RaftCoreModel.getSingleton();
+        LeaderStateModel leaderState = coreModel.getLeaderState();
+        PersistentStateModel persistentState = coreModel.getPersistentState();
+        List<LogEntryModel> logEntries = persistentState.getLogEntries();
+
         //2.获取开始和结束索引
-        int startIndex = Math.toIntExact(nextIndex.get(remoteNode.getServerId()));
+        int startIndex = Math.toIntExact(leaderState.getNextIndex().get(remoteNode.getServerId()));
         int endIndex = (int) (commitIndex + 1);
         //3.索引不符合预期时，发心跳空包
         if (startIndex >= endIndex || endIndex > logEntries.size()) {
@@ -124,7 +122,6 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
             LogEntryModel lastEntry = persistentState.getLastEntry();
             Long currentTerm = persistentState.getCurrentTerm();
             Map<Long, Long> matchIndex = coreModel.getLeaderState().getMatchIndex();
-            Map<Long, Long> nextIndex = coreModel.getLeaderState().getNextIndex();
 
             //2. 当前节点被废黜，或任期号变更了,不对回复值做处理
             if (coreModel.getServerStateEnum() != ServerStateEnum.LEADER
@@ -138,13 +135,13 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
             }
 
             //4. 判断结果，为true: nextIndex和matchIndex加一
-
+            Map<Long, Long> nextIndex = coreModel.getLeaderState().getNextIndex();
             if (response.getSuccess() && nextIndex.get(serverId) < lastEntry.getIndex() + 1) {
                 nextIndex.put(serverId, nextIndex.get(serverId) + 1);
-                matchIndex.put(serverId, matchIndex.get(serverId) + 1);
+                matchIndex.put(serverId, nextIndex.get(serverId) - 1);
             }
             // 为false: nextIndex减一
-            if (response.getSuccess() && nextIndex.get(serverId) > 1) {
+            if (!response.getSuccess() && nextIndex.get(serverId) > 1) {
                 nextIndex.put(serverId, nextIndex.get(serverId) - 1);
             }
         } finally {
