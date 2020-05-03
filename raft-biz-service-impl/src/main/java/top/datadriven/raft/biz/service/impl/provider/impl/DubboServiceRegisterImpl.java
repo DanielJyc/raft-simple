@@ -34,12 +34,12 @@ public class DubboServiceRegisterImpl implements DubboServiceRegister {
     @Override
     public void registry() {
         log.info("RaftFacade的dubbo服务:开始注册...");
-        registryByName(raftFacade);
-        registryByName(operationFacade);
+        registryByName(raftFacade, RaftFacade.class);
+        registryByName(operationFacade, OperationFacade.class);
         log.info("RaftFacade的dubbo服务:完成注册。");
     }
 
-    private <T> void registryByName(T t) {
+    private <T> void registryByName(T t, Class<?> interfaceClass) {
         //1. 获取当前server配置
         RaftNodeModel currentServerConfig = ConfigLoader.load().getLocalNode();
 
@@ -63,7 +63,7 @@ public class DubboServiceRegisterImpl implements DubboServiceRegister {
         service.setApplication(application);
         // 多个协议可以用setProtocols()
         service.setProtocol(protocol);
-        service.setInterface(t.getClass());
+        service.setInterface(interfaceClass);
         service.setRef(t);
         service.setRegistry(registry);
 
