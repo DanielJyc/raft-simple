@@ -1,6 +1,5 @@
 package top.datadriven.raft.integration.consumer.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
 import com.google.common.collect.Maps;
@@ -62,7 +61,7 @@ public class DubboServiceConsumerImpl implements DubboServiceConsumer {
 
     @Override
     public RaftFacade getFacade(Long serverId) {
-        if (CollectionUtil.isEmpty(raftFacadeMap)) {
+        if (raftFacadeMap.get(serverId) == null) {
             init();
         }
         return raftFacadeMap.get(serverId);
