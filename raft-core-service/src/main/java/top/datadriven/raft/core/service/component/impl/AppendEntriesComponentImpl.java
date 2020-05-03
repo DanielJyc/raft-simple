@@ -1,5 +1,6 @@
 package top.datadriven.raft.core.service.component.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Component;
 import top.datadriven.raft.config.loader.ConfigLoader;
@@ -74,8 +75,8 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
                 request.setPreLogIndex(persistentState.getPreEntry().getIndex());
                 request.setPreLogTerm(persistentState.getPreEntry().getTerm());
                 request.setLeaderCommit(commitIndex);
-                //复制leader已经commit的log entry
-                request.setLogEntries(getNextEntries(commitIndex, remoteNode));
+                //复制leader的log entry
+                request.setLogEntries(getNextEntries(remoteNode));
 
                 //2.2 线程池 异步发起单个请求
                 RaftThreadPool.execute(() -> requestAppendEntries(remoteNode.getServerId(), request));
@@ -89,8 +90,7 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
     /**
      * 获取下一批 日志条目
      */
-    private List<LogEntryModel> getNextEntries(Long commitIndex,
-                                               RaftNodeModel remoteNode) {
+    private List<LogEntryModel> getNextEntries(RaftNodeModel remoteNode) {
         //1.数据准备
         RaftCoreModel coreModel = RaftCoreModel.getSingleton();
         LeaderStateModel leaderState = coreModel.getLeaderState();
@@ -98,13 +98,13 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
         List<LogEntryModel> logEntries = persistentState.getLogEntries();
 
         //2.获取开始和结束索引
-        int startIndex = Math.toIntExact(leaderState.getNextIndex().get(remoteNode.getServerId()));
-        int endIndex = (int) (commitIndex + 1);
-        //3.索引不符合预期时，发心跳空包
-        if (startIndex >= endIndex || endIndex > logEntries.size()) {
+        int nextIndex = Math.toIntExact(leaderState.getNextIndex().get(remoteNode.getServerId()));
+        int lastLogIndex = Math.toIntExact(persistentState.getLastEntry().getIndex());
+        //3.索引不符合预期(已经大于等于最大日志)时，发心跳空包
+        if (nextIndex >= lastLogIndex) {
             return Lists.newArrayList();
         }
-        return logEntries.subList(startIndex, endIndex);
+        return logEntries.subList(nextIndex, lastLogIndex + 1);
     }
 
 
@@ -134,10 +134,13 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
                 FollowerConvertor.convert2Follower(response.getTerm(), coreModel);
             }
 
-            //4. 判断结果，为true: nextIndex和matchIndex加一
+            //4. 判断结果，为true: 更新nextIndex和matchIndex
+            //更新逻辑：nextIndex为最后一条日志+1，matchIndex为nextIndex-1
             Map<Long, Long> nextIndex = coreModel.getLeaderState().getNextIndex();
-            if (response.getSuccess() && nextIndex.get(serverId) < lastEntry.getIndex() + 1) {
-                nextIndex.put(serverId, nextIndex.get(serverId) + 1);
+            List<LogEntryModel> logs = request.getLogEntries();
+            if (response.getSuccess() && CollectionUtil.isNotEmpty(logs)) {
+                long next = logs.get(logs.size() - 1).getIndex() + 1;
+                nextIndex.put(serverId, next);
                 matchIndex.put(serverId, nextIndex.get(serverId) - 1);
             }
             // 为false: nextIndex减一
