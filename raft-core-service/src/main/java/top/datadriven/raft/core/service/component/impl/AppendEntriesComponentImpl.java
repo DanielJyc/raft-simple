@@ -137,9 +137,9 @@ public class AppendEntriesComponentImpl implements AppendEntriesComponent {
             //4. 判断结果，为true: 更新nextIndex和matchIndex
             //更新逻辑：nextIndex为最后一条日志+1，matchIndex为nextIndex-1
             Map<Long, Long> nextIndex = coreModel.getLeaderState().getNextIndex();
-            List<LogEntryModel> logs = request.getLogEntries();
-            if (response.getSuccess() && CollectionUtil.isNotEmpty(logs)) {
-                long next = logs.get(logs.size() - 1).getIndex() + 1;
+            List<LogEntryModel> requestLogs = request.getLogEntries();
+            if (response.getSuccess() && CollectionUtil.isNotEmpty(requestLogs)) {
+                long next = requestLogs.get(requestLogs.size() - 1).getIndex() + 1;
                 nextIndex.put(serverId, next);
                 matchIndex.put(serverId, nextIndex.get(serverId) - 1);
             }
