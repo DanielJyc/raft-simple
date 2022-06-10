@@ -25,7 +25,7 @@
         <mvel.version>2.4.0.Final</mvel.version>
         <servlet.version>3.0.1</servlet.version>
         <javassist.version>3.21.0-GA</javassist.version>
-        <dubbo.version>2.5.2</dubbo.version>
+        <dubbo.version>2.6.12</dubbo.version>
         <zkclient.version>0.1</zkclient.version>
         <netty.version>3.9.9.Final</netty.version>
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
